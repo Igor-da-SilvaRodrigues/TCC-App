@@ -6,14 +6,14 @@
 create database if not exists tcc_e1;
 use tcc_e1;
 
+drop table if exists Pessoa;
 drop table if exists Tipo;
+
 create table if not exists Tipo(
     tipo varchar(2) primary key
 );
 insert into Tipo(tipo) values ('PF'),('PJ');
 
-
-drop table if exists Pessoa;
 create table if not exists Pessoa(
     id varchar(36) primary key,
     nome varchar(100),
@@ -31,13 +31,14 @@ create table if not exists Pessoa(
 create database if not exists tcc_e2;
 use tcc_e2;
 
+drop table if exists Pessoa;
 drop table if exists Tipo;
+
 create table if not exists Tipo(
     tipo varchar(2) primary key
 );
 insert into Tipo(tipo) values ('PF'),('PJ'),('P');
 
-drop table if exists Pessoa;
 create table if not exists Pessoa(
     id varchar(36) primary key,
     nome varchar(100),
@@ -55,13 +56,15 @@ create table if not exists Pessoa(
 create database if not exists tcc_e3;
 use tcc_e3;
 
+drop table if exists Pessoa_Tipo;
+drop table if exists Pessoa;
 drop table if exists Tipo;
+
 create table if not exists Tipo(
     tipo varchar(2) primary key
 );
 insert into Tipo(tipo) values ('PF'), ('PJ');
 
-drop table if exists Pessoa;
 create table if not exists Pessoa(
     id varchar(36) primary key,
     nome varchar(100),
@@ -69,7 +72,6 @@ create table if not exists Pessoa(
     cnpj varchar(14)
 );
 
-drop table if exists Pessoa_Tipo;
 create table if not exists Pessoa_Tipo(
     id_Pessoa varchar(36),
     id_Tipo varchar(2),
@@ -86,13 +88,15 @@ create table if not exists Pessoa_Tipo(
 create database if not exists tcc_e4;
 use tcc_e4;
 
+drop table if exists Pessoa_Tipo;
+drop table if exists Pessoa;
 drop table if exists Tipo;
+
 create table if not exists Tipo(
     tipo varchar(2) primary key
 );
 insert into Tipo(tipo) values ('PF'), ('PJ'), ('P');
 
-drop table if exists Pessoa;
 create table if not exists Pessoa(
     id varchar(36) primary key,
     nome varchar(100),
@@ -100,7 +104,6 @@ create table if not exists Pessoa(
     cnpj varchar(14)
 );
 
-drop table if exists Pessoa_Tipo;
 create table if not exists Pessoa_Tipo(
     id_Pessoa varchar(36),
     id_Tipo varchar(2),
@@ -118,13 +121,14 @@ create database if not exists tcc_e5;
 use tcc_e5;
 
 drop table if exists PessoaFisica;
+drop table if exists PessoaJuridica;
+
 create table if not exists PessoaFisica(
     id varchar(36) primary key,
     nome varchar(100),
     cpf varchar(11)
 );
 
-drop table if exists PessoaJuridica;
 create table if not exists PessoaJuridica(
     id varchar(36) primary key,
     nome varchar(100),
@@ -139,20 +143,22 @@ create table if not exists PessoaJuridica(
 create database if not exists tcc_e6;
 use tcc_e6;
 
+drop table if exists PessoaJuridica;
+drop table if exists PessoaFisica;
 drop table if exists Pessoa;
+
+
 create table if not exists Pessoa(
     id varchar(36) primary key,
     nome varchar(100)
 );
 
-drop table if exists PessoaFisica;
 create table if not exists PessoaFisica(
     id_Pessoa varchar(36) primary key,
     cpf varchar(11),
     foreign key (id_Pessoa) references Pessoa(id)
 );
 
-drop table if exists PessoaJuridica;
 create table if not exists PessoaJuridica(
     id_Pessoa varchar(36) primary key,
     cnpj varchar(14),
