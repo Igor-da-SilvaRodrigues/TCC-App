@@ -14,6 +14,29 @@ public class CPF {
         return builder.toString();
     }
 
+    /**
+     * Returns the CPF represented by the string. Or null if the string is blank;
+     */
+    public static CPF fromString(String s) {
+        if(s == null || s.isBlank()){
+            return null;
+        }
+
+        CPF cpf1 = new CPF();
+        cpf1.setString(s);
+        return cpf1;
+    }
+
+    public void setString(String s){
+        if (s.length() != 11){
+            throw new IllegalArgumentException("Wrong string size: " + s.length());
+        }
+
+        for(int i = 0; i < s.length(); i++){
+            cpf[i] = Character.getNumericValue(s.charAt(i));
+        }
+    }
+
     public CPF() {
         cpf = new int[11];
         Random random = new Random();

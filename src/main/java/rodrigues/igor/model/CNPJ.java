@@ -14,6 +14,29 @@ public class CNPJ {
         return builder.toString();
     }
 
+    /**
+     * Returns the CNPJ represented by the string. Or null if the string is blank;
+     */
+    public static CNPJ fromString(String s){
+        if(s == null || s.isBlank()){
+            return null;
+        }
+
+        CNPJ cnpj1 = new CNPJ();
+        cnpj1.setString(s);
+        return cnpj1;
+    }
+
+    public void setString(String s){
+        if (s.length() != 14){
+            throw new IllegalArgumentException("Wrong string size: " + s.length());
+        }
+
+        for(int i = 0; i < s.length(); i++){
+            cnpj[i] = Character.getNumericValue(s.charAt(i));
+        }
+    }
+
     public CNPJ() {
         cnpj = new int[14];
         Random random = new Random();
