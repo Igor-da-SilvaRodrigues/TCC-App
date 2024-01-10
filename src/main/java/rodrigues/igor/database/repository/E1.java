@@ -1,8 +1,6 @@
 package rodrigues.igor.database.repository;
 
-import rodrigues.igor.model.CNPJ;
-import rodrigues.igor.model.CPF;
-import rodrigues.igor.model.Pessoa;
+import rodrigues.igor.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,14 +28,13 @@ public class E1 {
      * @return the query time in ms
      */
     public long create (Pessoa pessoa){
-        //Randomizing user type
-        Type type = Type.random();
-
         long time;
-        switch (type) {
-            case PF -> time = createPF(pessoa);
-            case PJ -> time = createPJ(pessoa);
-            default -> throw new RuntimeException("Illegal Type.");
+        if(pessoa instanceof PessoaJuridica){
+            time = createPJ((PessoaJuridica) pessoa);
+        } else if (pessoa instanceof PessoaFisica) {
+            time = createPF((PessoaFisica) pessoa);
+        }else{
+            throw new RuntimeException("Pure pessoa object");
         }
         return time;
     }
@@ -53,17 +50,17 @@ public class E1 {
             for (Pessoa p : pessoas){
                 statement.setString(1, p.getId().toString());
                 statement.setString(2, p.getNome());
-                Type type = Type.random();
-                statement.setString(5, type.getLabel());
-                switch (type){
-                    case PF -> {
-                        statement.setString(3, p.getCpf().getAsString());
-                        statement.setNull(4, Types.VARCHAR);
-                    }
-                    case PJ ->{
-                        statement.setNull(3, Types.VARCHAR);
-                        statement.setString(4, p.getCnpj().getAsString());
-                    }
+
+                if(p instanceof PessoaFisica){
+                    statement.setString(5, Type.PF.getLabel());
+                    statement.setString(3, ((PessoaFisica)p).getCpf().getAsString());
+                    statement.setNull(4, Types.VARCHAR);
+                }else if (p instanceof PessoaJuridica){
+                    statement.setString(5, Type.PJ.getLabel());
+                    statement.setNull(3, Types.VARCHAR);
+                    statement.setString(4, ((PessoaJuridica)p).getCnpj().getAsString());
+                }else{
+                    throw new RuntimeException("Pure Pessoa object");
                 }
                 statement.addBatch();
             }
@@ -78,7 +75,7 @@ public class E1 {
 
     }
 
-    private long createPJ(Pessoa pessoa) {
+    private long createPJ(PessoaJuridica pessoa) {
         String sql = "insert into pessoa(id,nome,cnpj,tipo) values (?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getId().toString());
@@ -97,7 +94,7 @@ public class E1 {
         }
     }
 
-    private long createPF(Pessoa pessoa) {
+    private long createPF(PessoaFisica pessoa) {
         String sql = "insert into pessoa(id,nome,cpf,tipo) values (?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getId().toString());
@@ -149,17 +146,16 @@ public class E1 {
             statement.setString(1, pessoa.getNome());
             statement.setString(4, id);
 
-            if(pessoa.getCpf() == null){
+            if ( pessoa instanceof PessoaJuridica){
                 statement.setNull(2, Types.VARCHAR);
-            }else{
-                statement.setString(2, pessoa.getCpf().getAsString());
-            }
-
-            if(pessoa.getCnpj() == null){
+                statement.setString(3, ((PessoaJuridica) pessoa).getCnpj().getAsString());
+            } else if (pessoa instanceof PessoaFisica) {
+                statement.setString(2, ((PessoaFisica) pessoa).getCpf().getAsString());
                 statement.setNull(3, Types.VARCHAR);
             }else{
-                statement.setString(3, pessoa.getCnpj().getAsString());
+                throw new RuntimeException("Pure Pessoa object");
             }
+
 
             long before = System.currentTimeMillis();
             statement.executeUpdate();
@@ -207,17 +203,26 @@ public class E1 {
             ResultSet set = statement.executeQuery();
             ArrayList<Pessoa> pessoas = new ArrayList<>();
             while (set.next()){
-                Pessoa p = new Pessoa();
-                p.setNome(set.getString("nome"));
-                p.setId(UUID.fromString(set.getString("id")));
-                p.setCnpj(CNPJ.fromString(set.getString("cnpj")));
-                p.setCpf(CPF.fromString(set.getString("cpf")));
-
-                pessoas.add(p);
+                String type = set.getString("tipo");
+                switch (type) {
+                    case "PJ" -> {
+                        PessoaJuridica pj = new PessoaJuridica();
+                        pj.setNome(set.getString("nome"));
+                        pj.setId(UUID.fromString(set.getString("id")));
+                        pj.setCnpj(CNPJ.fromString(set.getString("cnpj")));
+                        pessoas.add(pj);
+                    }
+                    case "PF" -> {
+                        PessoaFisica pf = new PessoaFisica();
+                        pf.setNome(set.getString("nome"));
+                        pf.setId(UUID.fromString(set.getString("id")));
+                        pf.setCpf(CPF.fromString(set.getString("cpf")));
+                        pessoas.add(pf);
+                    }
+                    default -> throw new RuntimeException("Invalid or Null type on entity");
+                }
             }
-
             return pessoas;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

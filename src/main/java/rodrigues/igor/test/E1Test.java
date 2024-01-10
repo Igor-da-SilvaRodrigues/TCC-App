@@ -47,7 +47,7 @@ public class E1Test{
 
         String id = repository._getRandomGenericId();
         for(int i = 0; i < repetitions; i++){
-            Pessoa p = new Pessoa().getRandom();
+            Pessoa p = Pessoa.getRandom();
             p.setNome("alteration1");
             sum += repository.updateById(p, id);
         }
