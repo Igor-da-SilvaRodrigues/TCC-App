@@ -5,14 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33f517b6-0ae0-49ff-979e-ea1e6d77b738" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/E1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/E1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/generator/Generator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/generator/Generator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/generator/PessoaGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/generator/PessoaGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/model/Pessoa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/model/Pessoa.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/model/PessoaFisica.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/model/PessoaFisica.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/model/PessoaJuridica.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/model/PessoaJuridica.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/model/Randomizable.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/E1Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/E1Test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

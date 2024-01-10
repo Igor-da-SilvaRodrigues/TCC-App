@@ -38,7 +38,7 @@ public class E1Test{
     }
 
     /**
-     * Updates an entity in the database n times. Only one entity is ever updated for the sake of consistency and fairness.
+     * Updates an entity in the database n times. Only one entity is ever updated for the sake of simplicity, consistency and fairness.
      * @param repetitions the number of times the test will be performed
      * @return the total sql query time
      */
