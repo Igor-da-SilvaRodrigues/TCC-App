@@ -1,13 +1,10 @@
 package rodrigues.igor.test;
 
-import com.mysql.cj.result.IntegerValueFactory;
-import com.sun.jdi.IntegerValue;
 import org.apache.commons.lang3.tuple.Pair;
 import rodrigues.igor.database.repository.E1;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
 
-import javax.swing.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

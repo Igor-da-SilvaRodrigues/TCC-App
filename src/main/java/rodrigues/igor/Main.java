@@ -2,6 +2,7 @@ package rodrigues.igor;
 
 import org.apache.commons.lang3.tuple.Pair;
 import rodrigues.igor.database.ConnectionDAO;
+import rodrigues.igor.database.repository.ConcreteTable;
 import rodrigues.igor.database.repository.E1;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
@@ -21,16 +22,22 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String name = askName();
         String password = askPassword();
-
         try(
             Connection e1Connection = new ConnectionDAO().connectE1(name, password);
+            Connection e5Connection = new ConnectionDAO().connectE5(name, password);
         ) {
 
             int n = 10 * 1000;//sample size
 
+
+
+            PessoaGenerator pessoaGenerator = new PessoaGenerator();
+            double e5createTotal = new ConcreteTable(e5Connection).create(pessoaGenerator.generateList(n));
+            System.out.printf("The average query time for 'CREATE' in E5 was: %.4f ms with a total of %.4f\n%n", e5createTotal/n, e5createTotal);
+
             double e1CreateBatchTotal = new E1Test().createBatch(n, new E1(e1Connection));
             System.out.printf("the average query time for 'CREATE' in E1 was: %.4f ms\n", e1CreateBatchTotal/n);
-
+/*
             double e1SelectBatchTotal = new E1Test().selectLimit(1, n, new E1(e1Connection));
             System.out.printf("the average query time for 'SELECT' in E1 was: %.4f ms, with a total of: %.4f ms\n", e1SelectBatchTotal/n, e1SelectBatchTotal);
 
@@ -38,7 +45,7 @@ public class Main {
             System.out.printf("the average query time for 'UPDATE' in E1 was: %.4f ms, with a total of: %.4f ms\n", e1UpdateBatchTotal/n, e1UpdateBatchTotal);
 
             Pair<Integer, Double> e1DeleteBatchTotal = new E1Test().delete(n, new E1(e1Connection));
-            System.out.printf("The average query time for 'DELETE' in E1 was %.4f ms, with a total of : %.4f ms in %d operations\n", e1DeleteBatchTotal.getRight()/e1DeleteBatchTotal.getLeft(), e1DeleteBatchTotal.getRight(), e1DeleteBatchTotal.getLeft());
+            System.out.printf("The average query time for 'DELETE' in E1 was %.4f ms, with a total of : %.4f ms in %d operations\n", e1DeleteBatchTotal.getRight()/e1DeleteBatchTotal.getLeft(), e1DeleteBatchTotal.getRight(), e1DeleteBatchTotal.getLeft());*/
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

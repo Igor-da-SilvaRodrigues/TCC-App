@@ -178,8 +178,12 @@ public class E1 {
             statement.setString(1, id);
 
             long before = System.currentTimeMillis();
-            statement.execute();
+            int result = statement.executeUpdate();
             long after = System.currentTimeMillis();
+
+            if(result == 0){
+                System.out.printf("%s: Unable to find entity of Id %s when trying to execute 'DELETE'%n",getClass().getSimpleName(), id);
+            }
 
             return after - before;
         } catch (SQLException e) {

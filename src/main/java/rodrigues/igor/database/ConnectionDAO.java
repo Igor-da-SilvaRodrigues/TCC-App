@@ -1,5 +1,6 @@
 package rodrigues.igor.database;
 
+import rodrigues.igor.database.repository.ConcreteTable;
 import rodrigues.igor.database.repository.E1;
 
 import java.sql.Connection;
@@ -25,5 +26,9 @@ public class ConnectionDAO {
             throw new RuntimeException(e);
         }
         return connection;
+    }
+
+    public Connection connectE5(String username, String password) {
+        return connect(ConcreteTable.DB_NAME, username, password);
     }
 }
