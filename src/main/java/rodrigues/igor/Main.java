@@ -2,11 +2,12 @@ package rodrigues.igor;
 
 import org.apache.commons.lang3.tuple.Pair;
 import rodrigues.igor.database.ConnectionDAO;
-import rodrigues.igor.database.repository.ConcreteTable;
-import rodrigues.igor.database.repository.E1;
+import rodrigues.igor.database.repository.ConcreteTableRepository;
+import rodrigues.igor.database.repository.E1Repository;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
 import rodrigues.igor.test.BatchResultSet;
+import rodrigues.igor.test.ConcreteTableTest;
 import rodrigues.igor.test.E1Test;
 import rodrigues.igor.test.ResultSet;
 
@@ -31,21 +32,32 @@ public class Main {
 
 
 
-            PessoaGenerator pessoaGenerator = new PessoaGenerator();
-            double e5createTotal = new ConcreteTable(e5Connection).create(pessoaGenerator.generateList(n));
-            System.out.printf("The average query time for 'CREATE' in E5 was: %.4f ms with a total of %.4f\n%n", e5createTotal/n, e5createTotal);
+            double e5createTotal = new ConcreteTableTest().createBatch(n, new ConcreteTableRepository(e5Connection));
+            System.out.printf("The average query time for 'CREATE' in E5 was: %.4f ms with a total of %.4f\n", e5createTotal/n, e5createTotal);
 
-            double e1CreateBatchTotal = new E1Test().createBatch(n, new E1(e1Connection));
+            double e5SelectBatchTotal = new ConcreteTableTest().selectLimit(10*1000, n, new ConcreteTableRepository(e5Connection));
+            System.out.printf("The average query time for 'SELECT' in E5 was: %.4f ms with a total of: %.4f\n", e5SelectBatchTotal/n, e5SelectBatchTotal);
+
+            double e5UpdateBatchTotal = new ConcreteTableTest().updatePF(n, new ConcreteTableRepository(e5Connection));
+            System.out.printf("The average query time for 'UPDATE' in E5 was: %.4f ms with a total of: %.4f\n", e5UpdateBatchTotal/n, e5UpdateBatchTotal);
+
+            Pair<Integer, Double> e5DeleteBatchTotal = new ConcreteTableTest().deletePF(n, new ConcreteTableRepository(e5Connection));
+            System.out.printf("The average query time for 'DELETE' in E5 was: %.4f ms with a total of: %.4f ms in %d operations\n", e5DeleteBatchTotal.getRight()/e5DeleteBatchTotal.getLeft(), e5DeleteBatchTotal.getRight(), e5DeleteBatchTotal.getLeft());
+
+
+
+
+            double e1CreateBatchTotal = new E1Test().createBatch(n, new E1Repository(e1Connection));
             System.out.printf("the average query time for 'CREATE' in E1 was: %.4f ms\n", e1CreateBatchTotal/n);
-/*
-            double e1SelectBatchTotal = new E1Test().selectLimit(1, n, new E1(e1Connection));
+
+            double e1SelectBatchTotal = new E1Test().selectLimit(10*1000, n, new E1Repository(e1Connection));
             System.out.printf("the average query time for 'SELECT' in E1 was: %.4f ms, with a total of: %.4f ms\n", e1SelectBatchTotal/n, e1SelectBatchTotal);
 
-            double e1UpdateBatchTotal = new E1Test().update(n, new E1(e1Connection));
+            double e1UpdateBatchTotal = new E1Test().update(n, new E1Repository(e1Connection));
             System.out.printf("the average query time for 'UPDATE' in E1 was: %.4f ms, with a total of: %.4f ms\n", e1UpdateBatchTotal/n, e1UpdateBatchTotal);
 
-            Pair<Integer, Double> e1DeleteBatchTotal = new E1Test().delete(n, new E1(e1Connection));
-            System.out.printf("The average query time for 'DELETE' in E1 was %.4f ms, with a total of : %.4f ms in %d operations\n", e1DeleteBatchTotal.getRight()/e1DeleteBatchTotal.getLeft(), e1DeleteBatchTotal.getRight(), e1DeleteBatchTotal.getLeft());*/
+            Pair<Integer, Double> e1DeleteBatchTotal = new E1Test().delete(n, new E1Repository(e1Connection));
+            System.out.printf("The average query time for 'DELETE' in E1 was %.4f ms, with a total of : %.4f ms in %d operations\n", e1DeleteBatchTotal.getRight()/e1DeleteBatchTotal.getLeft(), e1DeleteBatchTotal.getRight(), e1DeleteBatchTotal.getLeft());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -56,7 +68,7 @@ public class Main {
      * Here we are creating 4 threads, each creating a batch insert operation of 250k entities (total of 1kk).
      * Hopefully this will reduce the execution time from ~30m to under 10m ~IT DIDN'T
      */
-    private static double testE1CreateBatchMultiThread(int nentities, E1 repository) throws SQLException{
+    private static double testE1CreateBatchMultiThread(int nentities, E1Repository repository) throws SQLException{
         ArrayList<Future<BatchResultSet>> futures = new ArrayList<>();
 
         int nthreads = 4;
@@ -107,7 +119,7 @@ public class Main {
         return (double) sumOfResults/sumOfWeights;
     }
 
-    private static double testE1CreateBatch(int n, E1 repository) throws SQLException{
+    private static double testE1CreateBatch(int n, E1Repository repository) throws SQLException{
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
         return repository.create(pessoas);
     }
@@ -115,7 +127,7 @@ public class Main {
     /**
      * Tests the E1 strategy by creating n entities and returns the average query time;
      */
-    private static double testE1Create(int n, E1 repository) throws SQLException {
+    private static double testE1Create(int n, E1Repository repository) throws SQLException {
 
         ArrayList<Future<ResultSet>> futures = new ArrayList<>();
 

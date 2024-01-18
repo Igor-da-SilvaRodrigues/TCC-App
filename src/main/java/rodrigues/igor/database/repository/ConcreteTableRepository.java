@@ -1,63 +1,78 @@
 package rodrigues.igor.database.repository;
 
-import org.apache.commons.lang3.NotImplementedException;
+import rodrigues.igor.model.CPF;
 import rodrigues.igor.model.Pessoa;
 import rodrigues.igor.model.PessoaFisica;
 import rodrigues.igor.model.PessoaJuridica;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * E5 Uma tabela é criada para cada conjunto de entidades especializado.
  * A chave primária das tabelas representará o atributo identificador da entidade genérica e da entidade especializada
  * simultaneamente.
  */
-public class ConcreteTable {
+public class ConcreteTableRepository {
 
     public static final String DB_NAME = "tcc_e5";
     private final Connection connection;
 
-    public ConcreteTable(Connection connection) {
+    public ConcreteTableRepository(Connection connection) {
         this.connection = connection;
     }
 
     /**
      * Creates the provided entities.
      * Because this strategy consists of several tables, we can't use a single large insert operation.
-     * <br>We could create one large operation for each table, but this would require extracting sublists from the given list.
-     * This would also require creating a new sublist every time we create new specialized entity sets.
-     * <br>Instead, we will merely insert one entity at a time, each in it's own insert operation.
-     * This will likely cause lower performance overall.
-     * @return the sql query time in ms.
+     * <br>We're creating one large operation for each table and taking the sum of the query time of each operation as the total operation time.
+     * <br>One problem with this approach is that it requires creating a new sublist every time we create new specialized
+     * entity set.
+     * <br>However, since all we care about is the performance of the operation, and not about issues regarding
+     * the maintainability of the data access code, we'll go with this method to minimize time wasted due to a large number of operations
+     * @return the sql query time in ms, this is the sum of the time taken by the several insert operations triggered by this method.
      */
     public double create(List<Pessoa> pessoaList){
-        long sum = 0;
+        ArrayList<PessoaFisica> pessoaFisicaList    = new ArrayList<>();
+        ArrayList<PessoaJuridica>pessoaJuridicaList = new ArrayList<>();
 
         for(Pessoa pessoa : pessoaList){
             if (pessoa instanceof PessoaFisica){
-                sum += createPF((PessoaFisica) pessoa);
+                pessoaFisicaList.add((PessoaFisica) pessoa);
             } else if (pessoa instanceof PessoaJuridica) {
-                sum += createPJ((PessoaJuridica) pessoa);
+                pessoaJuridicaList.add((PessoaJuridica) pessoa);
             }else{
                 throw new RuntimeException("Pure Pessoa object");
             }
         }
 
-        return sum;
+        double PFBatchResult = createPF(pessoaFisicaList);
+        double PJBatchResult = createPJ(pessoaJuridicaList);
+
+
+        return PFBatchResult + PJBatchResult;
     }
 
-    public double createPF(PessoaFisica pessoaFisica){
+    public double createPF(ArrayList<PessoaFisica> pessoaList){
         String sql = "insert into pessoafisica(id, nome, cpf) values (?,?,?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, pessoaFisica.getId().toString());
-            statement.setString(2, pessoaFisica.getNome());
-            statement.setString(3, pessoaFisica.getCpf().getAsString());
+            for (PessoaFisica pessoa : pessoaList){
+                statement.setString(1, pessoa.getId().toString());
+                statement.setString(2, pessoa.getNome());
+                statement.setString(3, pessoa.getCpf().getAsString());
+
+                statement.addBatch();
+            }
+
 
             long before = System.currentTimeMillis();
-            statement.execute();
+            statement.executeBatch();
             long after = System.currentTimeMillis();
 
             return after - before;
@@ -66,15 +81,20 @@ public class ConcreteTable {
         }
     }
 
-    public double createPJ(PessoaJuridica pessoaJuridica){
+    public double createPJ(ArrayList<PessoaJuridica> pessoaList){
         String sql = "insert into pessoajuridica(id, nome, cnpj) values (?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, pessoaJuridica.getId().toString());
-            statement.setString(2, pessoaJuridica.getNome());
-            statement.setString(3, pessoaJuridica.getCnpj().getAsString());
+            for (PessoaJuridica pessoaJuridica : pessoaList){
+                statement.setString(1, pessoaJuridica.getId().toString());
+                statement.setString(2, pessoaJuridica.getNome());
+                statement.setString(3, pessoaJuridica.getCnpj().getAsString());
+
+                statement.addBatch();
+            }
+
 
             long before = System.currentTimeMillis();
-            statement.execute();
+            statement.executeBatch();
             long after = System.currentTimeMillis();
 
             return after - before;
@@ -120,7 +140,7 @@ public class ConcreteTable {
         }
     }
 
-    public double updatePFById(PessoaFisica pessoa, String id){
+    public double  updatePFById(PessoaFisica pessoa, String id){
         String sql = "update pessoafisica set nome = ?, cpf = ? where id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, pessoa.getNome());
@@ -197,6 +217,41 @@ public class ConcreteTable {
             }
 
             return after - before;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getRandomPFId() {
+        int limit = 1000*1000;
+        List<PessoaFisica> pessoas = getAllPF(limit);
+        Random random = new Random();
+        return pessoas.get(random.nextInt(pessoas.size())).getId().toString();
+    }
+
+    public List<PessoaFisica> getAllPF(int limit) {
+        String sql = "select pf.id, pf.nome, pf.cpf from pessoafisica pf";
+        if(limit > 0){
+            sql += " limit ?";
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            if(limit > 0){
+                statement.setInt(1, limit);
+            }
+
+            ResultSet set = statement.executeQuery();
+            ArrayList<PessoaFisica> list = new ArrayList<>();
+            while (set.next()){
+                PessoaFisica pf = new PessoaFisica();
+                pf.setNome(set.getString("nome"));
+                pf.setId(UUID.fromString(set.getString("id")));
+                pf.setCpf(CPF.fromString(set.getString("cpf")));
+
+                list.add(pf);
+            }
+
+            return list;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

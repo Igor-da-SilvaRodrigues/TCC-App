@@ -8,8 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/ConnectionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/ConnectionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/ConcreteTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/ConcreteTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/E1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/E1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/ConcreteTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/ConcreteTableRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/E1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/repository/E1Repository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/ConcreteTableTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/ConcreteTableTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/E1Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/E1Test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -102,6 +103,13 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="com.mysql.cj.result.DefaultColumnDefinition" memberName="fields" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

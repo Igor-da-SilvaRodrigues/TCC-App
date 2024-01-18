@@ -13,12 +13,12 @@ import java.util.UUID;
  * A chave primária da tabela representará os atributos identificadores das entidades genéricas e especializadas.
  * Não será permitido um valor discriminador para o conjunto genérico.
  */
-public class E1 {
+public class E1Repository {
     public static final String DB_NAME = "tcc_e1";
 
     private final Connection connection;
 
-    public E1(Connection connection) {
+    public E1Repository(Connection connection) {
         this.connection = connection;
     }
 
@@ -120,7 +120,7 @@ public class E1 {
      * @return the SQL query time.
      */
     public double selectLimit(int n) {
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p join tipo t on p.tipo = t.tipo";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p";
         if(n > 0){
             sql += " limit ?";
         }
@@ -196,7 +196,7 @@ public class E1 {
      * @return A list containing all entities.
      * @param limit the maximum number of entities. If less than 1 there is no limit.
      */
-    public List<Pessoa> _getAll(int limit){
+    public List<Pessoa> getAll(int limit){
         String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p join tipo t on p.tipo = t.tipo";
         if(limit>0){
             sql += " limit ?";
@@ -237,9 +237,9 @@ public class E1 {
      * that require an already existing entity.
      * @return a random UUID string from the existing generic entities.
      */
-    public String _getRandomGenericId(){
+    public String getRandomGenericId(){
         int limit = 1000 * 1000;
-        List<Pessoa> pessoas = _getAll(limit);
+        List<Pessoa> pessoas = getAll(limit);
         Random random = new Random();
         return pessoas.get(random.nextInt(pessoas.size())).getId().toString();
     }

@@ -1,7 +1,7 @@
 package rodrigues.igor.test;
 
 import org.apache.commons.lang3.tuple.Pair;
-import rodrigues.igor.database.repository.E1;
+import rodrigues.igor.database.repository.E1Repository;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
 
@@ -15,21 +15,21 @@ public class E1Test{
      * @return the SQL query time.
      * @throws SQLException if an sql error occurred;
      */
-    public double createBatch(int n, E1 repository) throws SQLException {
+    public double createBatch(int n, E1Repository repository) throws SQLException {
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
         return repository.create(pessoas);
     }
 
     /**
-     * Selects all information from the hierarchy, preserving the structure of the data.
-     * @param n the maximum number of entities to be queried.
+     * Selects all information from the hierarchy
+     * @param limit the maximum number of entities to be queried.
      * @param repetitions the number of times the query will be executed.
      * @return The total sql query time.
      */
-    public double selectLimit(int n, int repetitions, E1 repository) {
+    public double selectLimit(int limit, int repetitions, E1Repository repository) {
         double sum = 0;
         for (int i = 0; i < repetitions; i++){
-            sum += repository.selectLimit(n);
+            sum += repository.selectLimit(limit);
         }
         return sum;
     }
@@ -39,13 +39,13 @@ public class E1Test{
      * @param repetitions the number of times the test will be performed
      * @return the total sql query time
      */
-    public double update(int repetitions, E1 repository){
+    public double update(int repetitions, E1Repository repository){
         double sum = 0;
 
-        String id = repository._getRandomGenericId();
+        String id = repository.getRandomGenericId();
         for(int i = 0; i < repetitions; i++){
             Pessoa p = Pessoa.getRandom();
-            p.setNome("alteration1");
+            p.setNome("alteration%d".formatted(i));
             sum += repository.updateById(p, id);
         }
         return sum;
@@ -57,12 +57,12 @@ public class E1Test{
      * @return A pair. The left value contains the number of delete operations performed, the right value contains the
      * total sql query time.
      */
-    public Pair<Integer, Double> delete(int repetitions, E1 repository){
+    public Pair<Integer, Double> delete(int repetitions, E1Repository repository){
         double sum = 0;
 
         //getting n entities to delete. The actual amount of retrieved entities may be lower than the amount requested.
         //by the caller
-        List<Pessoa> pessoaList = repository._getAll(repetitions);
+        List<Pessoa> pessoaList = repository.getAll(repetitions);
 
         for (Pessoa p : pessoaList){
             sum += repository.deleteById(p.getId().toString());

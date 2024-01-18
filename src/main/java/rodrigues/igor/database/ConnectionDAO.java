@@ -1,7 +1,7 @@
 package rodrigues.igor.database;
 
-import rodrigues.igor.database.repository.ConcreteTable;
-import rodrigues.igor.database.repository.E1;
+import rodrigues.igor.database.repository.ConcreteTableRepository;
+import rodrigues.igor.database.repository.E1Repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +14,7 @@ public class ConnectionDAO {
      * Returns the connection to the E1 database
      */
     public Connection connectE1(String username, String password){
-        return connect(E1.DB_NAME, username, password);
+        return connect(E1Repository.DB_NAME, username, password);
     }
 
     public Connection connect(String database, String username, String password){
@@ -29,6 +29,6 @@ public class ConnectionDAO {
     }
 
     public Connection connectE5(String username, String password) {
-        return connect(ConcreteTable.DB_NAME, username, password);
+        return connect(ConcreteTableRepository.DB_NAME, username, password);
     }
 }
