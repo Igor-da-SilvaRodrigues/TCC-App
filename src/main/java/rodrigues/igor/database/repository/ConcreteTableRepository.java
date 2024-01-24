@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * E5 Uma tabela é criada para cada conjunto de entidades especializado.
@@ -52,9 +54,17 @@ public class ConcreteTableRepository {
             }
         }
 
-        double PFBatchResult = createPF(pessoaFisicaList);
-        double PJBatchResult = createPJ(pessoaJuridicaList);
+        double PFBatchResult = 0;//createPF(pessoaFisicaList);
+        double PJBatchResult = 0;//createPJ(pessoaJuridicaList);
 
+        CompletableFuture<Double> pfBatchResultFuture = CompletableFuture.supplyAsync(() -> createPF(pessoaFisicaList));
+        CompletableFuture<Double> pjBatchResultFuture = CompletableFuture.supplyAsync(() -> createPJ(pessoaJuridicaList));
+        try{
+            PFBatchResult = pfBatchResultFuture.get();
+            PJBatchResult = pjBatchResultFuture.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return PFBatchResult + PJBatchResult;
     }
