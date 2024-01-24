@@ -115,8 +115,8 @@ public class E1Repository {
 
     /**
      * Selects the first n entities in the database for the purpose of testing.
-     * The resulting entity list is uninteresting so we will ignore them.
-     * @param n The limit for the query. If less than 1, there will be no limit.>
+     * The resulting entity list is uninteresting so we will ignore it.
+     * @param n The limit for the query. If less than 1, there will be no limit.
      * @return the SQL query time.
      */
     public double selectLimit(int n) {

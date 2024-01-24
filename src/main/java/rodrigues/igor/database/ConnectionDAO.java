@@ -1,5 +1,6 @@
 package rodrigues.igor.database;
 
+import rodrigues.igor.database.repository.ClassTableRepository;
 import rodrigues.igor.database.repository.ConcreteTableRepository;
 import rodrigues.igor.database.repository.E1Repository;
 
@@ -30,5 +31,9 @@ public class ConnectionDAO {
 
     public Connection connectE5(String username, String password) {
         return connect(ConcreteTableRepository.DB_NAME, username, password);
+    }
+
+    public Connection connectE6(String username, String password) {
+        return connect(ClassTableRepository.DB_NAME, username, password);
     }
 }
