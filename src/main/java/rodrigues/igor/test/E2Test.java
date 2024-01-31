@@ -2,10 +2,12 @@ package rodrigues.igor.test;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
+import rodrigues.igor.csv.CSVReader;
 import rodrigues.igor.database.repository.E2Repository;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +27,18 @@ public class E2Test {
 
     public double update(int repetitions, E2Repository repository){
         double sum = 0;
-        String id = repository.getRandomGenericId();
-        for (int i = 0; i < repetitions; i++){
-            Pessoa p = Pessoa.getRandom();
-            p.setNome("alteration%d".formatted(i));
-            sum += repository.updateById(p, id);
 
+        Pessoa pessoa = repository.getOne();
+        try {
+            ArrayList<String> names = new CSVReader().getNames();
+            for (int i = 0; i < repetitions; i++) {
+                pessoa.randomize(names);
+                sum += repository.updateById(pessoa, pessoa.getId().toString());
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
+
         return sum;
     }
 

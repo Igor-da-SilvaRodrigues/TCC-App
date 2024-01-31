@@ -145,10 +145,10 @@ public class E1Repository {
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, pessoa.getNome());
             statement.setString(4, id);
-
             if ( pessoa instanceof PessoaJuridica){
                 statement.setNull(2, Types.VARCHAR);
                 statement.setString(3, ((PessoaJuridica) pessoa).getCnpj().getAsString());
+
             } else if (pessoa instanceof PessoaFisica) {
                 statement.setString(2, ((PessoaFisica) pessoa).getCpf().getAsString());
                 statement.setNull(3, Types.VARCHAR);
@@ -192,12 +192,13 @@ public class E1Repository {
     }
 
     /**
-     *
+     * Gets all entities in the database table up to a certain limit. Because in this strategy there is only a single
+     * table mapping the hierarchy, we'll determine the entity type by the discriminator value.
      * @return A list containing all entities.
      * @param limit the maximum number of entities. If less than 1 there is no limit.
      */
     public List<Pessoa> getAll(int limit){
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p join tipo t on p.tipo = t.tipo";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p";
         if(limit>0){
             sql += " limit ?";
         }
@@ -244,6 +245,9 @@ public class E1Repository {
         return pessoas.get(random.nextInt(pessoas.size())).getId().toString();
     }
 
+    public Pessoa getOne() {
+        return getAll(1).get(0);
+    }
 
 
     private enum Type{

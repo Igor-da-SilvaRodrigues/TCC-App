@@ -1,5 +1,6 @@
 package rodrigues.igor.model;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -48,6 +49,16 @@ public class Pessoa{
         pessoa.setId(UUID.randomUUID());
         pessoa.setNome("t");
         return pessoa;
+    }
+
+    /**
+     * Randomizes this entity. This is method will only randomize class specific data, except for the ID. This means it
+     * will never make the entity 'switch' subtypes, as may happen with {@link Pessoa#getRandom()}.
+     * @param names A list of names to be used as source for a new random name
+     *
+     */
+    public void randomize(List<String> names){
+        this.nome = names.get(new Random().nextInt(names.size()));
     }
 
     @Override

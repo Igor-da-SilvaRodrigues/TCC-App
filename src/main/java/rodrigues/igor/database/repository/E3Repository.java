@@ -115,6 +115,7 @@ public class E3Repository {
             if (pessoa instanceof PessoaFisica){
                 statement.setString(2, ((PessoaFisica) pessoa).getCpf().getAsString());
                 statement.setNull(3, Types.VARCHAR);
+
             } else if (pessoa instanceof PessoaJuridica) {
                 statement.setNull(2, Types.VARCHAR);
                 statement.setString(3, ((PessoaJuridica) pessoa).getCnpj().getAsString());
@@ -208,6 +209,10 @@ public class E3Repository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Pessoa getOne() {
+        return getAll(1).get(0);
     }
 
     private class Pessoa_Tipo{

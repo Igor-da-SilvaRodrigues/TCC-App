@@ -1,5 +1,7 @@
 package rodrigues.igor.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class PessoaJuridica extends Pessoa{
@@ -30,6 +32,13 @@ public class PessoaJuridica extends Pessoa{
     public void setCnpj(CNPJ cnpj) {
         this.cnpj = cnpj;
     }
+
+    @Override
+    public void randomize(List<String> names){
+        super.randomize(names);
+        this.setCnpj(new CNPJ());
+    }
+
 
     @Override
     public boolean equals(Object o) {

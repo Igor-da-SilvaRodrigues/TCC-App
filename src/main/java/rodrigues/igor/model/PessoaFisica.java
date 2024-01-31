@@ -1,5 +1,6 @@
 package rodrigues.igor.model;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PessoaFisica extends Pessoa{
@@ -32,6 +33,12 @@ public class PessoaFisica extends Pessoa{
 
     public void setCpf(CPF cpf) {
         this.cpf = cpf;
+    }
+
+    @Override
+    public void randomize(List<String> names){
+        super.randomize(names);
+        this.setCpf(new CPF());
     }
 
     @Override

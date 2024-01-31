@@ -10,6 +10,10 @@ import java.util.ArrayList;
 public class CSVReader {
     private static final String csvFile = "src/main/java/rodrigues/igor/database/data/nomes.csv";
 
+    /**
+     * Returns the list of names contained in the CSV file.
+     * @throws FileNotFoundException
+     */
     public ArrayList<String> getNames() throws FileNotFoundException {
         return get(csvFile);
     }

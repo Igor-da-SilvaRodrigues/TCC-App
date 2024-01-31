@@ -180,6 +180,10 @@ public class E2Repository {
         }
     }
 
+    public Pessoa getOne() {
+        return getAll(1).get(0);
+    }
+
     private enum Type{
         P("P"), PF("PF"), PJ("PJ");
 

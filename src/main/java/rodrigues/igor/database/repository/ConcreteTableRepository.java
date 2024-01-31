@@ -1,9 +1,6 @@
 package rodrigues.igor.database.repository;
 
-import rodrigues.igor.model.CPF;
-import rodrigues.igor.model.Pessoa;
-import rodrigues.igor.model.PessoaFisica;
-import rodrigues.igor.model.PessoaJuridica;
+import rodrigues.igor.model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -264,6 +261,80 @@ public class ConcreteTableRepository {
             return list;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public List<PessoaJuridica> getAllPJ(int limit){
+        String sql = "select pj.id, pj.nome, pj.cnpj from pessoajuridica pj";
+        if (limit > 0){
+            sql += " limit ?";
+        }
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            if (limit > 0){
+                statement.setInt(1, limit);
+            }
+            ResultSet set = statement.executeQuery();
+            ArrayList<PessoaJuridica> list = new ArrayList<>();
+            while (set.next()){
+                PessoaJuridica pj = new PessoaJuridica();
+                pj.setId(UUID.fromString(set.getString("id")));
+                pj.setNome(set.getString("nome"));
+                pj.setCnpj(CNPJ.fromString(set.getString("cnpj")));
+
+                list.add(pj);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Get's one entity. It will randomly be either PF or PJ.
+     * @return
+     */
+    public Pessoa getOne(){
+        Type choice = Type.getRandom();
+        switch (choice){
+            case PF -> {
+                return getAllPF(1).get(0);
+            }
+            case PJ -> {
+                return getAllPJ(1).get(0);
+            }
+            default -> throw new RuntimeException("Unexpected Type, something went wrong...");
+        }
+    }
+
+    /**
+     * This method gets up to a number of entities from the database.
+     * Because in this strategy there are multiple specialized tables to fetch, we have to divide the limit to allow for
+     * an even distribution of entities among the available subtypes.
+     * In our case, with two subtypes, means the limit HAS to be divisible by 2. Otherwise the size of the resulting list
+     * may be lower than expected.
+     * @param limit
+     * @return
+     */
+    public List<Pessoa> getAll(int limit){
+        if (limit == 1){throw new RuntimeException("Don't");}
+        ArrayList<Pessoa> list = new ArrayList<>();
+        list.addAll(getAllPJ(limit/2));
+        list.addAll(getAllPF(limit/2));
+        return list;
+    }
+    private enum Type{
+        PF("PF"), PJ("PJ");
+
+        private final String label;
+
+        Type(String label) {
+            this.label = label;
+        }
+
+        public static Type getRandom() {
+            Type[] t = new Type[]{PF, PJ};
+            return t[new Random().nextInt(t.length)];
         }
     }
 }

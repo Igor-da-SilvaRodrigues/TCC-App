@@ -1,11 +1,13 @@
 package rodrigues.igor.test;
 
 import org.apache.commons.lang3.tuple.Pair;
+import rodrigues.igor.csv.CSVReader;
 import rodrigues.igor.database.repository.ConcreteTableRepository;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
 import rodrigues.igor.model.PessoaFisica;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,20 +34,24 @@ public class ConcreteTableTest {
         return sum;
     }
 
-    public double updatePF(int repetitions, ConcreteTableRepository repository){
+    public double update(int repetitions, ConcreteTableRepository repository){
         double sum = 0;
 
-        String id = repository.getRandomPFId();
-        for(int i = 0; i < repetitions; i++){
-            PessoaFisica p = PessoaFisica.getRandom();
-            p.setNome("alteration%d".formatted(i));
-            sum += repository.updateById(p, id);
+        Pessoa pessoa = repository.getOne();//fetch a single entity to repeatedly update
+        try {
+            ArrayList<String> names = new CSVReader().getNames();
+            for (int i = 0; i < repetitions; i++) {
+                pessoa.randomize(names);//randomize generic and specialized data
+                sum += repository.updateById(pessoa, pessoa.getId().toString());
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
         return sum;
     }
 
     /**
-     * Deletes n PF entities from the database
+     * Deletes n entities from the database
      * @param repetitions the desired number of repetitions
      * @return A pair. The left value contains the number of delete operations performed, the right value contains the
      * total sql query time.
@@ -53,8 +59,9 @@ public class ConcreteTableTest {
     public Pair<Integer, Double> deletePF(int repetitions, ConcreteTableRepository repository){
         double sum = 0;
 
-        List<PessoaFisica> pessoaList = repository.getAllPF(repetitions);
-        for (PessoaFisica pf : pessoaList){
+
+        List<Pessoa> pessoaList = repository.getAll(repetitions);
+        for (Pessoa pf : pessoaList){
             sum += repository.deleteById(pf, pf.getId().toString());
         }
 
