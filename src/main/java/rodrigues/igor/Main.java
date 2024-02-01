@@ -2,14 +2,10 @@ package rodrigues.igor;
 
 import org.apache.commons.lang3.tuple.Pair;
 import rodrigues.igor.database.ConnectionDAO;
-import rodrigues.igor.database.repository.ConcreteTableRepository;
-import rodrigues.igor.database.repository.E1Repository;
+import rodrigues.igor.database.repository.*;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
-import rodrigues.igor.test.BatchResultSet;
-import rodrigues.igor.test.ConcreteTableTest;
-import rodrigues.igor.test.E1Test;
-import rodrigues.igor.test.ResultSet;
+import rodrigues.igor.test.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -20,166 +16,140 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         String name = askName();
         String password = askPassword();
-        try(
-            Connection e1Connection = new ConnectionDAO().connectE1(name, password);
-            Connection e5Connection = new ConnectionDAO().connectE5(name, password);
-        ) {
 
-            int n = 10 * 1000;//sample size
+        int n = 1 * 1000;//sample size
 
+        CompletableFuture<Void> futureE6 = CompletableFuture.runAsync(()-> testE6(name, password, n));
+        CompletableFuture<Void> futureE5 = CompletableFuture.runAsync(()-> testE5(name, password, n));
+        CompletableFuture<Void> futureE4 = CompletableFuture.runAsync(()-> testE4(name, password, n));
+        CompletableFuture<Void> futureE3 = CompletableFuture.runAsync(()-> testE3(name, password, n));
+        CompletableFuture<Void> futureE2 = CompletableFuture.runAsync(()-> testE2(name, password, n));
+        CompletableFuture<Void> futureE1 = CompletableFuture.runAsync(()-> testE1(name, password, n));
 
+        futureE6.get();
+        futureE5.get();
+        futureE4.get();
+        futureE3.get();
+        futureE2.get();
+        futureE1.get();
+    }
 
-            double e5createTotal = new ConcreteTableTest().createBatch(n, new ConcreteTableRepository(e5Connection));
-            System.out.printf("The average query time for 'CREATE' in E5 was: %.4f ms with a total of %.4f\n", e5createTotal/n, e5createTotal);
-
-            double e5SelectBatchTotal = new ConcreteTableTest().selectLimit(10*1000, n, new ConcreteTableRepository(e5Connection));
-            System.out.printf("The average query time for 'SELECT' in E5 was: %.4f ms with a total of: %.4f\n", e5SelectBatchTotal/n, e5SelectBatchTotal);
-
-            double e5UpdateBatchTotal = new ConcreteTableTest().updatePF(n, new ConcreteTableRepository(e5Connection));
-            System.out.printf("The average query time for 'UPDATE' in E5 was: %.4f ms with a total of: %.4f\n", e5UpdateBatchTotal/n, e5UpdateBatchTotal);
-
-            Pair<Integer, Double> e5DeleteBatchTotal = new ConcreteTableTest().deletePF(n, new ConcreteTableRepository(e5Connection));
-            System.out.printf("The average query time for 'DELETE' in E5 was: %.4f ms with a total of: %.4f ms in %d operations\n", e5DeleteBatchTotal.getRight()/e5DeleteBatchTotal.getLeft(), e5DeleteBatchTotal.getRight(), e5DeleteBatchTotal.getLeft());
-
-
-
-
-            double e1CreateBatchTotal = new E1Test().createBatch(n, new E1Repository(e1Connection));
+    private static void testE1(String name, String password, int n){
+        try (Connection connection = new ConnectionDAO().connectE1(name, password)){
+            double e1CreateBatchTotal = new E1Test().createBatch(n, new E1Repository(connection));
             System.out.printf("the average query time for 'CREATE' in E1 was: %.4f ms\n", e1CreateBatchTotal/n);
 
-            double e1SelectBatchTotal = new E1Test().selectLimit(10*1000, n, new E1Repository(e1Connection));
+            double e1SelectBatchTotal = new E1Test().selectLimit(10*1000, n, new E1Repository(connection));
             System.out.printf("the average query time for 'SELECT' in E1 was: %.4f ms, with a total of: %.4f ms\n", e1SelectBatchTotal/n, e1SelectBatchTotal);
 
-            double e1UpdateBatchTotal = new E1Test().update(n, new E1Repository(e1Connection));
+            double e1UpdateBatchTotal = new E1Test().update(n, new E1Repository(connection));
             System.out.printf("the average query time for 'UPDATE' in E1 was: %.4f ms, with a total of: %.4f ms\n", e1UpdateBatchTotal/n, e1UpdateBatchTotal);
 
-            Pair<Integer, Double> e1DeleteBatchTotal = new E1Test().delete(n, new E1Repository(e1Connection));
+            Pair<Integer, Double> e1DeleteBatchTotal = new E1Test().delete(n, new E1Repository(connection));
             System.out.printf("The average query time for 'DELETE' in E1 was %.4f ms, with a total of : %.4f ms in %d operations\n", e1DeleteBatchTotal.getRight()/e1DeleteBatchTotal.getLeft(), e1DeleteBatchTotal.getRight(), e1DeleteBatchTotal.getLeft());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
+    private static void testE2(String name, String password, int n){
+        try (Connection connection = new ConnectionDAO().connectE2(name, password)){
+            double e2Create = new E2Test().createBatch(n , new E2Repository(connection));
+            System.out.printf("The average query time for 'CREATE' in E2 was: %.4f ms with a total of %.4f\n", e2Create/n, e2Create );
 
-    /**
-     * Here we are creating 4 threads, each creating a batch insert operation of 250k entities (total of 1kk).
-     * Hopefully this will reduce the execution time from ~30m to under 10m ~IT DIDN'T
-     */
-    private static double testE1CreateBatchMultiThread(int nentities, E1Repository repository) throws SQLException{
-        ArrayList<Future<BatchResultSet>> futures = new ArrayList<>();
+            double e2Select = new E2Test().selectLimit(10*1000, n, new E2Repository(connection));
+            System.out.printf("The average query time for 'SELECT' in E2 was: %.4f ms with a total of %.4f\n", e2Select/n, e2Select );
 
-        int nthreads = 4;
+            double e2Update = new E2Test().update(n, new E2Repository(connection));
+            System.out.printf("The average query time for 'UPDATE' in E2 was: %.4f ms with a total of %.4f\n", e2Update/n, e2Update );
 
-        //creating threads
-        ExecutorService executorService = Executors.newFixedThreadPool(nthreads);
-        for (int i = 0; i < nthreads; i++){
-            int finalI = i;
-            Future<BatchResultSet> future = executorService.submit(() -> {
-                ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(nentities/nthreads);
-                BatchResultSet resultSet = new BatchResultSet();
-                resultSet.setNresults(pessoas.size());
-                resultSet.setResult(repository.create(pessoas));
-                System.out.printf("Thread %d found average of %f ms in %d operations taking a total of %d ms\n",
-                        finalI, resultSet.averageTime(), resultSet.getNresults(), resultSet.getResult());
+            Pair<Integer, Double> e2Delete = new E2Test().delete(n, new E2Repository(connection));
+            System.out.printf("The average query time for 'UPDATE' in E2 was: %.4f ms with a total of %.4f ms in %d operations\n", e2Delete.getRight()/e2Delete.getLeft(), e2Delete.getRight(), e2Delete.getLeft());
 
-                return resultSet;
-            });
-            futures.add(future);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        System.out.printf("Created %d threads\n", nthreads);
+    }
+    private static void testE3(String name, String password, int n){
+        try (Connection connection = new ConnectionDAO().connectE3(name, password)){
+            double e3Create = new E3Test().createBatch(n, new E3Repository(connection));
+            System.out.printf("The average query time for 'CREATE' in E3 was: %.4f ms with a total of %.4f\n", e3Create/n, e3Create);
 
-        //scheduling shutdown
-        executorService.shutdown();
+            double e3Select = new E3Test().selectLimit(10*1000, n, new E3Repository(connection));
+            System.out.printf("The average query time for 'SELECT' in E3 was: %.4f ms with a total of %.4f\n", e3Select/n, e3Select);
 
-        //wait until all threads have finished.
-        try {
-            System.out.println("Waiting for all threads to finish");
-            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            double e3Update = new E3Test().update(n, new E3Repository(connection));
+            System.out.printf("The average query time for 'UPDATE' in E3 was: %.4f ms with a total of %.4f\n", e3Update/n, e3Update);
+
+            Pair<Integer, Double> e3Delete = new E3Test().delete(n, new E3Repository(connection));
+            System.out.printf("The average query time for 'DELETE' in E3 was : %.4f ms with a total of %.3f ms in %d operations\n", e3Delete.getRight()/e3Delete.getLeft(), e3Delete.getRight(), e3Delete.getLeft());
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+    }
+    private static void testE4(String name, String password, int n){
+        try (Connection connection = new ConnectionDAO().connectE4(name, password)){
+            double e4Create = new E4Test().createBatch(n, new E4Repository(connection));
+            System.out.printf("The average query time for 'CREATE' in E4 was: %.4f ms with a total of %.4f\n", e4Create/n, e4Create);
 
-        //getting final results
-        long sumOfResults = 0;
-        long sumOfWeights = 0;
-        for (Future<BatchResultSet> future : futures){
-            try{
-                BatchResultSet resultSet = future.get();
-                sumOfResults += resultSet.getResult();
-                sumOfWeights += resultSet.getNresults();
-            } catch (ExecutionException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            double e4Select = new E4Test().select(10*1000, n, new E4Repository(connection));
+            System.out.printf("The average query time for 'SELECT' in E4 was: %.4f ms with a total of %.4f\n", e4Select/n, e4Select);
+
+            double e4Update = new E4Test().update(n, new E4Repository(connection));
+            System.out.printf("The average query time for 'UPDATE' in E4 was: %.4f ms with a total of %.4f\n", e4Update/n, e4Update);
+
+            Pair<Integer, Double> e4Delete = new E4Test().delete(n, new E4Repository(connection));
+            System.out.printf("The average query time for 'DELETE' in E4 was: %.4f ms with a total of %.4f ms in %d operations\n", e4Delete.getRight()/e4Delete.getLeft(), e4Delete.getRight(), e4Delete.getLeft());
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+    }
+    private static void testE5(String name, String password, int n){
+        try (Connection connection = new ConnectionDAO().connectE5(name, password)){
+            double e5createTotal = new ConcreteTableTest().createBatch(n, new ConcreteTableRepository(connection));
+            System.out.printf("The average query time for 'CREATE' in E5 was: %.4f ms with a total of %.4f\n", e5createTotal/n, e5createTotal);
 
-        System.out.println("Total ammount of operations: " + sumOfWeights);
-        return (double) sumOfResults/sumOfWeights;
+            double e5SelectBatchTotal = new ConcreteTableTest().selectLimit(10*1000, n, new ConcreteTableRepository(connection));
+            System.out.printf("The average query time for 'SELECT' in E5 was: %.4f ms with a total of: %.4f\n", e5SelectBatchTotal/n, e5SelectBatchTotal);
+
+            double e5UpdateBatchTotal = new ConcreteTableTest().update(n, new ConcreteTableRepository(connection));
+            System.out.printf("The average query time for 'UPDATE' in E5 was: %.4f ms with a total of: %.4f\n", e5UpdateBatchTotal/n, e5UpdateBatchTotal);
+
+            Pair<Integer, Double> e5DeleteBatchTotal = new ConcreteTableTest().deletePF(n, new ConcreteTableRepository(connection));
+            System.out.printf("The average query time for 'DELETE' in E5 was: %.4f ms with a total of: %.4f ms in %d operations\n", e5DeleteBatchTotal.getRight()/e5DeleteBatchTotal.getLeft(), e5DeleteBatchTotal.getRight(), e5DeleteBatchTotal.getLeft());
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static void testE6(String name, String password, int n){
+        try (Connection connection = new ConnectionDAO().connectE6(name, password)){
+            double e6Create = new ClassTableTest().createBatch(n, new ClassTableRepository(connection));
+            System.out.printf("The average query time for 'CREATE' in E6 was: %.4f ms with a total of %.4f\n", e6Create/n, e6Create);
+
+            double e6Select = new ClassTableTest().selectLimit(10*1000, n, new ClassTableRepository(connection));
+            System.out.printf("The average query time for 'SELECT' in E6 was: %.4f ms with a total of %.4f\n", e6Select/n, e6Select);
+
+            double e6Update = new ClassTableTest().update(n, new ClassTableRepository(connection));
+            System.out.printf("The average query time for 'UPDATE' in E6 was: %.4f ms with a total of %.4f\n", e6Update/n, e6Update);
+
+            Pair<Integer, Double> e6Delete = new ClassTableTest().delete(n, new ClassTableRepository(connection));
+            System.out.printf("The average query time for 'DELETE' in E6 was: %.4f ms with a total of: %.4f ms in %d operations\n", e6Delete.getRight()/e6Delete.getLeft(), e6Delete.getRight(), e6Delete.getLeft());
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static double testE1CreateBatch(int n, E1Repository repository) throws SQLException{
-        ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
-        return repository.create(pessoas);
-    }
-
-    /**
-     * Tests the E1 strategy by creating n entities and returns the average query time;
-     */
-    private static double testE1Create(int n, E1Repository repository) throws SQLException {
-
-        ArrayList<Future<ResultSet>> futures = new ArrayList<>();
-
-        int nthreads = 1000;
-        //we'll divide the task into threads.
-        ExecutorService executorService = Executors.newFixedThreadPool(nthreads);
-        for(int i = 0; i < nthreads; i++){
-            int finalI = i;
-            Future<ResultSet> future = executorService.submit(() -> {
-                ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n/nthreads);
-                ResultSet resultSet = new ResultSet();
-                for (Pessoa p : pessoas){
-                    resultSet.addResult(repository.create(p));
-                }
-
-                System.out.printf("Thread %d found average of %f in %d operations with a max of %d and a min of %d\n",
-                        finalI, resultSet.averageTime(), resultSet.numberOfResults(), resultSet.maxTime(), resultSet.minTime());
-
-                return resultSet;
-                //this will probably never not be 'n/nthreads' operations, and if it isn't it the program should have halted.
-                //meaning storing the number of operations is probably not needed, but we'll do it just in case.
-            });
-
-            futures.add(future);
-        }
-        System.out.printf("Created %d threads\n", nthreads);
-        executorService.shutdown();
 
 
-        //wait until all threads have finished.
-        try {
-            System.out.println("Waiting for all threads to finish");
-            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        long averageTimesWeight = 0;
-        int sumOfWeights = 0;
-        for(Future<ResultSet> future : futures){
-            try{
-                ResultSet result = future.get();
-                //we'll calculate the weighted average of the given results
-                averageTimesWeight += result.sumOfTimes();
-                sumOfWeights += result.numberOfResults();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("Total ammount of operations: " + sumOfWeights);
-        return (double) averageTimesWeight/sumOfWeights;
-    }
+
 
     private static String askName(){
         System.out.print("\nEnter user name: ");
@@ -191,15 +161,5 @@ public class Main {
         return  new Scanner(System.in).nextLine();
     }
 
-    static class BatchCreateTask implements Callable<ResultSet> {
-        List<Pessoa> list;
-        public BatchCreateTask(List<Pessoa> list) {
-            this.list = list;
-        }
-
-        @Override
-        public ResultSet call() throws Exception {
-            return null;
-        }
-    }
+    
 }

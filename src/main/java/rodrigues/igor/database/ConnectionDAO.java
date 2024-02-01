@@ -42,4 +42,8 @@ public class ConnectionDAO {
     public Connection connectE3(String username, String password){
         return connect(E3Repository.DB_NAME, username, password);
     }
+
+    public Connection connectE4(String username, String password){
+        return connect(E4Repository.DB_NAME, username, password);
+    }
 }
