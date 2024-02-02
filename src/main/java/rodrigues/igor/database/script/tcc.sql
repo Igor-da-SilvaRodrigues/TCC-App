@@ -23,7 +23,7 @@ create table if not exists Pessoa(
     foreign key (tipo) references Tipo(tipo)
 );
 
----------------------------------------------------------------
+-- -------------------------------------------------------------
 
 -- E2
 -- Toda a hierarquia é mapeada em apenas uma tabela. A chave primária da tabela representará os atributos identificadores das entidades genéricas e especializadas. Será permitido o uso de um valor discriminador para o conjunto genérico.
@@ -48,7 +48,7 @@ create table if not exists Pessoa(
     foreign key (tipo) references Tipo(tipo)
 );
 
----------------------------------------------------------------
+-- -------------------------------------------------------------
 
 -- E3
 -- Toda a hierarquia é mapeada em apenas uma tabela. Será permitido o uso de atributos discriminadores compostos através de um relacionamento n pra n com uma tabela contendo os valores existentes. Não será permitido um valor discriminador para o conjunto genérico.
@@ -80,7 +80,7 @@ create table if not exists Pessoa_Tipo(
     foreign key (id_Tipo) references Tipo(tipo)
 );
 
----------------------------------------------------------------
+-- -------------------------------------------------------------
 
 -- E4
 -- Toda a hierarquia é mapeada em apenas uma tabela. Será permitido o uso de atributos discriminadores compostos. Será permitido o uso de um valor discriminador para o conjunto genérico.
@@ -112,7 +112,7 @@ create table if not exists Pessoa_Tipo(
     foreign key(id_Tipo) references Tipo(tipo)
 );
 
----------------------------------------------------------------
+-- -------------------------------------------------------------
 
 -- E5
 -- Uma tabela é criada para cada conjunto de entidades especializado. A chave primária das tabelas representará o atributo identificador da entidade genérica e da entidade especializada simultaneamente.
@@ -135,7 +135,7 @@ create table if not exists PessoaJuridica(
     cnpj varchar(14)
 );
 
----------------------------------------------------------------
+-- -------------------------------------------------------------
 
 -- E6
 -- Uma tabela é criada para cada conjunto de entidades na hierarquia. A relação entre as tabelas será feita com uma chave estrangeira nas tabelas especializadas.
