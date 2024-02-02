@@ -18,8 +18,8 @@ public class E4Repository {
     }
 
     public double create(List<Pessoa> list){
-        String sql = "insert into pessoa(id, nome, cpf, cnpj) values (?, ?, ?, ?)";
-        String sqlRelationship = "insert into pessoa_tipo(id_Pessoa, id_Tipo) values (?, ?)";
+        String sql = "insert into Pessoa(id, nome, cpf, cnpj) values (?, ?, ?, ?)";
+        String sqlRelationship = "insert into Pessoa_Tipo(id_Pessoa, id_Tipo) values (?, ?)";
         try (
                 PreparedStatement pessoaStatement = connection.prepareStatement(sql);
                 PreparedStatement tipoStatement = connection.prepareStatement(sqlRelationship);
@@ -66,7 +66,7 @@ public class E4Repository {
     }
 
     public double selectLimit(int limit){
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from pessoa p join pessoa_tipo pt on p.id = pt.id_Pessoa";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from Pessoa p join Pessoa_Tipo pt on p.id = pt.id_Pessoa";
         if(limit > 0){
             sql += " limit ?";
         }
@@ -87,7 +87,7 @@ public class E4Repository {
     }
 
     public double update(Pessoa p, String id){
-        String sql = "update pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
+        String sql = "update Pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, p.getNome());
             if (p instanceof PessoaFisica){
@@ -116,7 +116,7 @@ public class E4Repository {
     }
 
     public ArrayList<Pessoa> getAll(int limit) {
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from pessoa p join pessoa_tipo pt on p.id = pt.id_Pessoa";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from Pessoa p join Pessoa_Tipo pt on p.id = pt.id_Pessoa";
         if (limit > 0){
             sql += " limit ?";
         }
@@ -155,8 +155,8 @@ public class E4Repository {
     }
 
     public double deleteById(String id) {
-        String sql = "delete from pessoa p where p.id = ?";
-        String sqlPT = "delete from pessoa_tipo pt where pt.id_Pessoa = ?";
+        String sql = "delete from Pessoa p where p.id = ?";
+        String sqlPT = "delete from Pessoa_Tipo pt where pt.id_Pessoa = ?";
         try (
                 PreparedStatement statement = connection.prepareStatement(sql);
                 PreparedStatement statementPT = connection.prepareStatement(sqlPT)

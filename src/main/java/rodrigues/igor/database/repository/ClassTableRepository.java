@@ -60,7 +60,7 @@ public class ClassTableRepository {
     }
 
     private double createGeneric(List<Pessoa> genericPessoaList) {
-        String sql = "insert into pessoa(id, nome) values (?, ?)";
+        String sql = "insert into Pessoa(id, nome) values (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             for (Pessoa p : genericPessoaList){
                 statement.setString(1, p.getId().toString());
@@ -77,7 +77,7 @@ public class ClassTableRepository {
         }
     }
     private double createPF(List<PessoaFisica> pessoaFisicaList){
-        String sql = "insert into pessoafisica(id_Pessoa, cpf) values (?, ?)";
+        String sql = "insert into PessoaFisica(id_Pessoa, cpf) values (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             for (PessoaFisica p : pessoaFisicaList){
                 statement.setString(1, p.getId().toString());
@@ -94,7 +94,7 @@ public class ClassTableRepository {
         }
     }
     private double createPJ(List<PessoaJuridica> pessoaJuridicaList){
-        String sql = "insert into pessoajuridica(id_Pessoa, cnpj) values (?, ?)";
+        String sql = "insert into PessoaJuridica(id_Pessoa, cnpj) values (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             for (PessoaJuridica p : pessoaJuridicaList){
                 statement.setString(1, p.getId().toString());
@@ -121,7 +121,7 @@ public class ClassTableRepository {
      * @return the sql query time
      */
     public double selectPfLimit(int limit){
-        String sql = "select p.id, p.nome, pf.cpf from pessoa p join pessoafisica pf on p.id = pf.id_Pessoa";
+        String sql = "select p.id, p.nome, pf.cpf from Pessoa p join PessoaFisica pf on p.id = pf.id_Pessoa";
         if(limit>0){
             sql += " limit ?";
         }
@@ -193,7 +193,7 @@ public class ClassTableRepository {
     }
 
     public double updatePessoaById(Pessoa pessoa, String id){
-        String sql = "update pessoa set nome = ? where id = ?";
+        String sql = "update Pessoa set nome = ? where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getNome());
             statement.setString(2, id);
@@ -209,7 +209,7 @@ public class ClassTableRepository {
     }
 
     public double updatePFById(PessoaFisica pessoaFisica, String id){
-        String sql = "update pessoafisica set cpf = ? where id_Pessoa = ?";
+        String sql = "update PessoaFisica set cpf = ? where id_Pessoa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoaFisica.getCpf().getAsString());
             statement.setString(2, id);
@@ -224,7 +224,7 @@ public class ClassTableRepository {
     }
 
     public double updatePJById(PessoaJuridica pessoaJuridica, String id){
-        String sql = "update pessoajuridica set cnpj = ? where id_Pessoa = ?";
+        String sql = "update PessoaJuridica set cnpj = ? where id_Pessoa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoaJuridica.getCnpj().getAsString());
             statement.setString(2, id);
@@ -272,7 +272,7 @@ public class ClassTableRepository {
     }
 
     private double deletePById(String id) {
-        String sql = "delete from pessoa p where p.id = ?";
+        String sql = "delete from Pessoa p where p.id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -291,7 +291,7 @@ public class ClassTableRepository {
     }
 
     private double deletePJById(String id) {
-        String sql = "delete from pessoajuridica pj where pj.id_Pessoa = ?";
+        String sql = "delete from PessoaJuridica pj where pj.id_Pessoa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -310,7 +310,7 @@ public class ClassTableRepository {
     }
 
     public double deletePFById(String id){
-        String sql = "delete from pessoafisica pf where pf.id_Pessoa = ?";
+        String sql = "delete from PessoaFisica pf where pf.id_Pessoa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -336,7 +336,7 @@ public class ClassTableRepository {
     }
 
     private List<PessoaFisica> getAllPF(int limit) {
-        String sql = "select p.id, p.nome, pf.cpf from pessoa p join pessoafisica pf on p.id = pf.id_Pessoa";
+        String sql = "select p.id, p.nome, pf.cpf from Pessoa p join PessoaFisica pf on p.id = pf.id_Pessoa";
         if(limit>0){
             sql += " limit ?";
         }
@@ -361,7 +361,7 @@ public class ClassTableRepository {
         }
     }
     private List<PessoaJuridica> getAllPJ(int limit){
-        String sql = "select p.id, p.nome, pj.cnpj from pessoa p join pessoajuridica pj on p.id = pj.id_Pessoa";
+        String sql = "select p.id, p.nome, pj.cnpj from Pessoa p join PessoaJuridica pj on p.id = pj.id_Pessoa";
         if(limit > 0){
             sql += " limit ?";
         }

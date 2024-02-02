@@ -67,7 +67,7 @@ public class ConcreteTableRepository {
     }
 
     public double createPF(ArrayList<PessoaFisica> pessoaList){
-        String sql = "insert into pessoafisica(id, nome, cpf) values (?,?,?)";
+        String sql = "insert into PessoaFisica(id, nome, cpf) values (?,?,?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             for (PessoaFisica pessoa : pessoaList){
                 statement.setString(1, pessoa.getId().toString());
@@ -89,7 +89,7 @@ public class ConcreteTableRepository {
     }
 
     public double createPJ(ArrayList<PessoaJuridica> pessoaList){
-        String sql = "insert into pessoajuridica(id, nome, cnpj) values (?, ?, ?)";
+        String sql = "insert into PessoaJuridica(id, nome, cnpj) values (?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             for (PessoaJuridica pessoaJuridica : pessoaList){
                 statement.setString(1, pessoaJuridica.getId().toString());
@@ -120,7 +120,7 @@ public class ConcreteTableRepository {
      * @return the sql query time
      */
     public double selectPFLimit(int n){
-        String sql = "select pf.id, pf.nome, pf.cpf from pessoafisica pf";
+        String sql = "select pf.id, pf.nome, pf.cpf from PessoaFisica pf";
         if(n > 0){
             sql += " limit ?";
         }
@@ -148,7 +148,7 @@ public class ConcreteTableRepository {
     }
 
     public double  updatePFById(PessoaFisica pessoa, String id){
-        String sql = "update pessoafisica set nome = ?, cpf = ? where id = ?";
+        String sql = "update PessoaFisica set nome = ?, cpf = ? where id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, pessoa.getNome());
             statement.setString(2, pessoa.getCpf().getAsString());
@@ -165,7 +165,7 @@ public class ConcreteTableRepository {
     }
 
     public double updatePJById(PessoaJuridica pessoa, String id){
-        String sql = "update pessoajuridica set nome = ?, cnpj = ? where id = ?";
+        String sql = "update PessoaJuridica set nome = ?, cnpj = ? where id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getNome());
             statement.setString(2, pessoa.getCnpj().getAsString());
@@ -192,7 +192,7 @@ public class ConcreteTableRepository {
     }
 
     private double deletePJById(String id) {
-        String sql = "delete from pessoajuridica pj where pj.id = ?";
+        String sql = "delete from PessoaJuridica pj where pj.id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -211,7 +211,7 @@ public class ConcreteTableRepository {
     }
 
     private double deletePFById(String id) {
-        String sql = "delete from pessoafisica pf where pf.id = ?";
+        String sql = "delete from PessoaFisica pf where pf.id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -237,7 +237,7 @@ public class ConcreteTableRepository {
     }
 
     public List<PessoaFisica> getAllPF(int limit) {
-        String sql = "select pf.id, pf.nome, pf.cpf from pessoafisica pf";
+        String sql = "select pf.id, pf.nome, pf.cpf from PessoaFisica pf";
         if(limit > 0){
             sql += " limit ?";
         }
@@ -265,7 +265,7 @@ public class ConcreteTableRepository {
     }
 
     public List<PessoaJuridica> getAllPJ(int limit){
-        String sql = "select pj.id, pj.nome, pj.cnpj from pessoajuridica pj";
+        String sql = "select pj.id, pj.nome, pj.cnpj from PessoaJuridica pj";
         if (limit > 0){
             sql += " limit ?";
         }

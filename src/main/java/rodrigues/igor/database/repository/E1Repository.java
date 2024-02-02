@@ -45,7 +45,7 @@ public class E1Repository {
      * @return the query time in ms
      */
     public long create (List<Pessoa> pessoas){
-        String insert = "insert into pessoa(id,nome,cpf,cnpj,tipo) values (?,?,?,?,?)";
+        String insert = "insert into Pessoa(id,nome,cpf,cnpj,tipo) values (?,?,?,?,?)";
         try(PreparedStatement statement = connection.prepareStatement(insert)){
             for (Pessoa p : pessoas){
                 statement.setString(1, p.getId().toString());
@@ -76,7 +76,7 @@ public class E1Repository {
     }
 
     private long createPJ(PessoaJuridica pessoa) {
-        String sql = "insert into pessoa(id,nome,cnpj,tipo) values (?,?,?,?)";
+        String sql = "insert into Pessoa(id,nome,cnpj,tipo) values (?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getId().toString());
             statement.setString(2, pessoa.getNome());
@@ -95,7 +95,7 @@ public class E1Repository {
     }
 
     private long createPF(PessoaFisica pessoa) {
-        String sql = "insert into pessoa(id,nome,cpf,tipo) values (?,?,?,?)";
+        String sql = "insert into Pessoa(id,nome,cpf,tipo) values (?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getId().toString());
             statement.setString(2, pessoa.getNome());
@@ -120,7 +120,7 @@ public class E1Repository {
      * @return the SQL query time.
      */
     public double selectLimit(int n) {
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from Pessoa p";
         if(n > 0){
             sql += " limit ?";
         }
@@ -141,7 +141,7 @@ public class E1Repository {
      * @return the sql query time.
      */
     public double updateById(Pessoa pessoa, String id){
-        String sql = "update pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
+        String sql = "update Pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, pessoa.getNome());
             statement.setString(4, id);
@@ -173,7 +173,7 @@ public class E1Repository {
      * @return the sql query time.
      */
     public double deleteById(String id){
-        String sql = "delete from pessoa p where p.id = ?";
+        String sql = "delete from Pessoa p where p.id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -198,7 +198,7 @@ public class E1Repository {
      * @param limit the maximum number of entities. If less than 1 there is no limit.
      */
     public List<Pessoa> getAll(int limit){
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from Pessoa p";
         if(limit>0){
             sql += " limit ?";
         }

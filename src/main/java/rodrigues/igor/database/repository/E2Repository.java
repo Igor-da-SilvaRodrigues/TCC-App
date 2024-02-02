@@ -28,7 +28,7 @@ public class E2Repository {
      * @return the sql query time in ms.
      */
     public double create(List<Pessoa> pessoaList){
-        String sql = "insert into pessoa(id, nome, cpf, cnpj, tipo) values (?, ?, ?, ?, ?)";
+        String sql = "insert into Pessoa(id, nome, cpf, cnpj, tipo) values (?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             for (Pessoa p : pessoaList){
                 //filling generic attributes
@@ -66,7 +66,7 @@ public class E2Repository {
      * @return the sql query time in ms.
      */
     public double selectLimit(int limit){
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from Pessoa p";
         if (limit > 0){
             sql += " limit ?";
         }
@@ -85,7 +85,7 @@ public class E2Repository {
     }
 
     public double updateById(Pessoa pessoa, String id){
-        String sql = "update pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
+        String sql = "update Pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getNome());
             if (pessoa instanceof PessoaFisica){
@@ -110,7 +110,7 @@ public class E2Repository {
 
 
     public double deleteById(String id){
-        String sql = "delete from pessoa p where p.id = ?";
+        String sql = "delete from Pessoa p where p.id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -136,7 +136,7 @@ public class E2Repository {
     }
 
     public List<Pessoa> getAll(int limit) {
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from pessoa p";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, p.tipo from Pessoa p";
         if(limit > 0){
             sql += " limit ?";
         }

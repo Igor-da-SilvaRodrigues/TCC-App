@@ -32,7 +32,7 @@ public class E3Repository {
      * @return
      */
     public double create(List<Pessoa> pessoas){
-        String sqlP = "insert into pessoa(id, nome, cpf, cnpj) values (?, ?, ?, ?)";
+        String sqlP = "insert into Pessoa(id, nome, cpf, cnpj) values (?, ?, ?, ?)";
         ArrayList<Pessoa_Tipo> relationshipList = new ArrayList<>();
         double resultP;
         try (PreparedStatement statement = connection.prepareStatement(sqlP)){
@@ -68,7 +68,7 @@ public class E3Repository {
 
         //After all entities are inserted, insert their relationships.
         double resultPT;
-        String sqlPT = "insert into pessoa_tipo(id_Pessoa, id_Tipo) values (?, ?)";
+        String sqlPT = "insert into Pessoa_Tipo(id_Pessoa, id_Tipo) values (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sqlPT)){
             for (Pessoa_Tipo relationship : relationshipList){
                 statement.setString(1, relationship.id_Pessoa);
@@ -90,7 +90,7 @@ public class E3Repository {
     }
 
     public double selectLimit(int limit){
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from pessoa p join pessoa_tipo pt on p.id = pt.id_Pessoa";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from Pessoa p join Pessoa_Tipo pt on p.id = pt.id_Pessoa";
         if(limit > 0){
             sql += " limit ?";
         }
@@ -109,7 +109,7 @@ public class E3Repository {
     }
 
     public double update(Pessoa pessoa, String id){
-        String sql = "update pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
+        String sql = "update Pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, pessoa.getNome());
             if (pessoa instanceof PessoaFisica){
@@ -135,8 +135,8 @@ public class E3Repository {
     }
 
     public double delete(String id){
-        String sqlPT = "delete from pessoa_tipo pt where pt.id_Pessoa = ?";
-        String sqlP = "delete from pessoa p where p.id = ?";
+        String sqlPT = "delete from Pessoa_Tipo pt where pt.id_Pessoa = ?";
+        String sqlP = "delete from Pessoa p where p.id = ?";
         try (
                 PreparedStatement statement = connection.prepareStatement(sqlP);
                 PreparedStatement relationshipStatement = connection.prepareStatement(sqlPT);
@@ -173,7 +173,7 @@ public class E3Repository {
     }
 
     public List<Pessoa> getAll(int limit){
-        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from pessoa p join pessoa_tipo pt on p.id = pt.id_Pessoa";
+        String sql = "select p.id, p.nome, p.cpf, p.cnpj, pt.id_Tipo from Pessoa p join Pessoa_Tipo pt on p.id = pt.id_Pessoa";
         if(limit > 0){
             sql += " limit ?";
         }
