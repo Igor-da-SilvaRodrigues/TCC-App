@@ -2,13 +2,12 @@ package rodrigues.igor.csv;
 
 import com.opencsv.exceptions.CsvValidationException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CSVReader {
-    private static final String csvFile = "src/main/java/rodrigues/igor/database/data/nomes.csv";
+    private static final String csvFile = "/data/nomes.csv";
 
     /**
      * Returns the list of names contained in the CSV file.
@@ -19,10 +18,9 @@ public class CSVReader {
     }
 
     public ArrayList<String> get(String path) {
-        try(com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new FileReader(path))) {
+        try(com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new InputStreamReader(Objects.requireNonNull(CSVReader.class.getResourceAsStream(path))))) {
             String[] nextLine;
             ArrayList<String> result = new ArrayList<>();
-
             while ((nextLine = reader.readNext()) != null){
                 for (String cell : nextLine){
                     result.add(nextLine[0]);

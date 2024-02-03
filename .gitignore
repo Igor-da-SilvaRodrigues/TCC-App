@@ -66,3 +66,4 @@ bin/
 hs_err_pid*
 replay_pid*
 .idea/workspace.xml
+.idea/artifacts/TCC_App_main_jar.xml
