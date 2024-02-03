@@ -110,7 +110,7 @@ public class E2Repository {
 
 
     public double deleteById(String id){
-        String sql = "delete from Pessoa p where p.id = ?";
+        String sql = "delete from Pessoa where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 

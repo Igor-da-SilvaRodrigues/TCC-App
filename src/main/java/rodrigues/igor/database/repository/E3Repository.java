@@ -135,8 +135,8 @@ public class E3Repository {
     }
 
     public double delete(String id){
-        String sqlPT = "delete from Pessoa_Tipo pt where pt.id_Pessoa = ?";
-        String sqlP = "delete from Pessoa p where p.id = ?";
+        String sqlPT = "delete from Pessoa_Tipo where id_Pessoa = ?";
+        String sqlP = "delete from Pessoa where id = ?";
         try (
                 PreparedStatement statement = connection.prepareStatement(sqlP);
                 PreparedStatement relationshipStatement = connection.prepareStatement(sqlPT);

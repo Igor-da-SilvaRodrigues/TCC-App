@@ -155,8 +155,8 @@ public class E4Repository {
     }
 
     public double deleteById(String id) {
-        String sql = "delete from Pessoa p where p.id = ?";
-        String sqlPT = "delete from Pessoa_Tipo pt where pt.id_Pessoa = ?";
+        String sql = "delete from Pessoa where id = ?";
+        String sqlPT = "delete from Pessoa_Tipo where id_Pessoa = ?";
         try (
                 PreparedStatement statement = connection.prepareStatement(sql);
                 PreparedStatement statementPT = connection.prepareStatement(sqlPT)

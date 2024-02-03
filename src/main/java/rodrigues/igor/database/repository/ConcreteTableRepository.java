@@ -192,7 +192,7 @@ public class ConcreteTableRepository {
     }
 
     private double deletePJById(String id) {
-        String sql = "delete from PessoaJuridica pj where pj.id = ?";
+        String sql = "delete from PessoaJuridica where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -211,7 +211,7 @@ public class ConcreteTableRepository {
     }
 
     private double deletePFById(String id) {
-        String sql = "delete from PessoaFisica pf where pf.id = ?";
+        String sql = "delete from PessoaFisica where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 

@@ -272,7 +272,7 @@ public class ClassTableRepository {
     }
 
     private double deletePById(String id) {
-        String sql = "delete from Pessoa p where p.id = ?";
+        String sql = "delete from Pessoa where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -291,7 +291,7 @@ public class ClassTableRepository {
     }
 
     private double deletePJById(String id) {
-        String sql = "delete from PessoaJuridica pj where pj.id_Pessoa = ?";
+        String sql = "delete from PessoaJuridica where id_Pessoa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
@@ -310,7 +310,7 @@ public class ClassTableRepository {
     }
 
     public double deletePFById(String id){
-        String sql = "delete from PessoaFisica pf where pf.id_Pessoa = ?";
+        String sql = "delete from PessoaFisica where id_Pessoa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, id);
 
