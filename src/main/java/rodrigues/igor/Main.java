@@ -9,6 +9,7 @@ import rodrigues.igor.test.result.StrategyResult;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -18,19 +19,23 @@ public class Main {
         String name = askName();
         String password = askPassword();
 
-        int n = 1 * 1000;//sample size
+        int n = 10 * 1000;//sample size
 
 
-        Result result = test(name, password, n);
-        try (Connection connection = new ConnectionDAO().connectResult(name, password)){
-            new ResultRepository(connection).createResult(result);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        for (int i = 0; i < 100; i++) {
+            Result result = testAsync(name, password, n);
+            try (Connection connection = new ConnectionDAO().connectResult(name, password)){
+                new ResultRepository(connection).createResult(result);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Completed loop number " + i+1);
         }
+
         System.out.println("Finished.");
     }
 
-    private static Result testAsync(String name, String password, int n) throws ExecutionException, InterruptedException {
+    private static Result testAsync(String name, String password, int n) {
         CompletableFuture<StrategyResult> futureE6 = CompletableFuture.supplyAsync(() -> testE6(name, password, n));
         CompletableFuture<StrategyResult> futureE5 = CompletableFuture.supplyAsync(() -> testE5(name, password, n));
         CompletableFuture<StrategyResult> futureE4 = CompletableFuture.supplyAsync(() -> testE4(name, password, n));
