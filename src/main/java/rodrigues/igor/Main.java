@@ -29,7 +29,7 @@ public class Main {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("Completed loop number " + i+1);
+            System.out.printf("Completed loop number %02d%n", i+1);
         }
 
         System.out.println("Finished.");
