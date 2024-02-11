@@ -18,11 +18,11 @@ public class Main {
     public static void main(String[] args) {
         String name = askName();
         String password = askPassword();
+        int loops = 10;
+        int n = 100 * 1000;//sample size
 
-        int n = 10 * 1000;//sample size
 
-
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < loops; i++) {
             Result result = testAsync(name, password, n);
             try (Connection connection = new ConnectionDAO().connectResult(name, password)){
                 new ResultRepository(connection).createResult(result);
@@ -30,6 +30,7 @@ public class Main {
                 throw new RuntimeException(e);
             }
             System.out.printf("Completed loop number %02d%n", i+1);
+            System.out.printf("Completed loop number %02d/%d%n", i+1, loops);
         }
 
         System.out.println("Finished.");
