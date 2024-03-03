@@ -10,14 +10,14 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class E4Test {
+public class E4Test implements GenericTest<E4Repository>{
 
     public double createBatch(int n, E4Repository repository){
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
         return repository.create(pessoas);
     }
 
-    public double select(int limit, int repetitions, E4Repository repository){
+    public double selectLimit(int limit, int repetitions, E4Repository repository){
         double sum = 0;
         for (int i = 0; i < repetitions; i++) {
             sum += repository.selectLimit(limit);

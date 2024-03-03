@@ -5,7 +5,6 @@ import rodrigues.igor.csv.CSVReader;
 import rodrigues.igor.database.repository.ConcreteTableRepository;
 import rodrigues.igor.generator.PessoaGenerator;
 import rodrigues.igor.model.Pessoa;
-import rodrigues.igor.model.PessoaFisica;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.List;
 /**
  * E5 Concrete table com ID universal
  */
-public class ConcreteTableTest {
+public class ConcreteTableTest implements GenericTest<ConcreteTableRepository>{
     public double createBatch(int n, ConcreteTableRepository repository){
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
         return repository.create(pessoas);
@@ -56,7 +55,7 @@ public class ConcreteTableTest {
      * @return A pair. The left value contains the number of delete operations performed, the right value contains the
      * total sql query time.
      */
-    public Pair<Integer, Double> deletePF(int repetitions, ConcreteTableRepository repository){
+    public Pair<Integer, Double> delete(int repetitions, ConcreteTableRepository repository){
         double sum = 0;
 
 

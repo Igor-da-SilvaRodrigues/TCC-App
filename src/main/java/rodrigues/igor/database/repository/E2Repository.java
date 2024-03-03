@@ -14,7 +14,7 @@ import java.util.UUID;
  * das entidades genéricas e especializadas. Será permitido
  * o uso de um valor discriminador para o conjunto genérico
  */
-public class E2Repository {
+public class E2Repository implements TestRepository{
     public static final String DB_NAME = "tcc_e2";
     private final Connection connection;
 
@@ -103,6 +103,23 @@ public class E2Repository {
             statement.executeUpdate();
             long after = System.currentTimeMillis();
             return after - before;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public double delete(Pessoa pessoa) {
+        return deleteById(pessoa.getId().toString());
+    }
+
+    @Override
+    public int count() {
+        String sql = "select count(id) from Pessoa";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

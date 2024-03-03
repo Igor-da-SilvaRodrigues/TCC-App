@@ -4,6 +4,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import rodrigues.igor.database.ConnectionDAO;
 import rodrigues.igor.database.repository.*;
 import rodrigues.igor.test.*;
+import rodrigues.igor.test.fixedsize.FixedSizeTest;
+import rodrigues.igor.test.fixedsize.FixedSizeTester;
 import rodrigues.igor.test.result.Result;
 import rodrigues.igor.test.result.StrategyResult;
 
@@ -21,20 +23,36 @@ public class Main {
         int loops = 10;
         int n = 100 * 1000;//sample size
 
-
-        for (int i = 0; i < loops; i++) {
-            Result result = testAsync(name, password, n);
-            try (Connection connection = new ConnectionDAO().connectResult(name, password)){
-                new ResultRepository(connection).createResult(result);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.printf("Completed loop number %02d%n", i+1);
-            System.out.printf("Completed loop number %02d/%d%n", i+1, loops);
-        }
-
+        testFixedAndLog(loops, n, 500000, name, password);
         System.out.println("Finished.");
     }
+
+    //should probably clean the table before running, and make sure only results of the same tableSize are present
+    //I'll just do that manually, backup the results and clean the table before running with another tableSize
+    private static void testFixedAndLog(int loops, int sampleSize, int fixedTableSize, String name, String password){
+        for (int i = 0; i < loops; i++) {
+            Result result = new FixedSizeTester(fixedTableSize).testAll(name, password, sampleSize);
+            logResult(result, name, password);
+            System.out.printf("Completed loop number %02d/%d%n", i+1, loops);
+        }
+    }
+
+    private static void testAsyncAndLog(int loops, int sampleSize, String name, String password){
+        for (int i = 0; i < loops; i++) {
+            Result result = testAsync(name, password, sampleSize);
+            logResult(result, name, password);
+            System.out.printf("Completed loop number %02d/%d%n", i+1, loops);
+        }
+    }
+
+    private static void logResult(Result result, String name, String password){
+        try (Connection connection = new ConnectionDAO().connectResult(name, password)){
+            new ResultRepository(connection).createResult(result);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private static Result testAsync(String name, String password, int n) {
         CompletableFuture<StrategyResult> futureE6 = CompletableFuture.supplyAsync(() -> testE6(name, password, n));
@@ -58,6 +76,10 @@ public class Main {
         }
     }
 
+    /**
+     * Executes tests of size N, and returns the result containing the average sql query time in N operations.
+     * Some results may be null if invalid, so they will have to be null checked.
+     */
     private static Result test(String name, String password, int n){
         StrategyResult e6Result = testE6(name, password, n);
         StrategyResult e5Result = testE5(name, password, n);
@@ -169,7 +191,7 @@ public class Main {
             double createAverage = e4Create/n;
             System.out.printf("The average query time for 'CREATE' in E4 was: %.4f ms with a total of %.4f\n", createAverage, e4Create);
 
-            double e4Select = new E4Test().select(10*1000, n, new E4Repository(connection));
+            double e4Select = new E4Test().selectLimit(10*1000, n, new E4Repository(connection));
             double selectAverage = e4Select/n;
             System.out.printf("The average query time for 'SELECT' in E4 was: %.4f ms with a total of %.4f\n", selectAverage, e4Select);
 
@@ -205,7 +227,7 @@ public class Main {
             double updateAverage = e5UpdateBatchTotal/n;
             System.out.printf("The average query time for 'UPDATE' in E5 was: %.4f ms with a total of: %.4f\n", updateAverage, e5UpdateBatchTotal);
 
-            Pair<Integer, Double> e5DeleteBatchTotal = new ConcreteTableTest().deletePF(n, new ConcreteTableRepository(connection));
+            Pair<Integer, Double> e5DeleteBatchTotal = new ConcreteTableTest().delete(n, new ConcreteTableRepository(connection));
             double deleteAverage = e5DeleteBatchTotal.getRight()/ e5DeleteBatchTotal.getLeft();
             System.out.printf("The average query time for 'DELETE' in E5 was: %.4f ms with a total of: %.4f ms in %d operations\n", deleteAverage, e5DeleteBatchTotal.getRight(), e5DeleteBatchTotal.getLeft());
 

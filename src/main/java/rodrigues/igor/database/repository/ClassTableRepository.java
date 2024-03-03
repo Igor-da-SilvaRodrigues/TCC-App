@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class ClassTableRepository {
+public class ClassTableRepository implements TestRepository{
 
     public static final String DB_NAME = "tcc_e6";
     private final Connection connection;
@@ -111,6 +111,13 @@ public class ClassTableRepository {
         }
     }
 
+
+    @Override
+    public double selectLimit(int limit) {
+        return selectPfLimit(limit);
+    }
+
+
     /**
      * The hierarchy contains two specialized sets, so to retrieve all information in the hierarchy we will have to
      * choose one of the two to query.
@@ -158,6 +165,7 @@ public class ClassTableRepository {
         //the result is the sum of the sql times
         return resultP + nextResult;
     }
+
 
     /**
      * Updating entity asynchronously to <b>maybe</b> save on sql time. The method itself isn't async, but it
@@ -237,6 +245,26 @@ public class ClassTableRepository {
             throw new RuntimeException(e);
         }
     }
+
+
+
+    @Override
+    public double delete(Pessoa pessoa) {
+        return deleteById(pessoa, pessoa.getId().toString());
+    }
+
+    @Override
+    public int count() {
+        String sql = "select count(id) from Pessoa";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * Normally, this kind of method would have to query the database multiple times to delete all possible entities with
@@ -394,7 +422,9 @@ public class ClassTableRepository {
      * @return
      */
     public List<Pessoa> getAll(int limit) {
-        if(limit == 1){throw new RuntimeException("Don't");}
+        if(limit == 1){
+            return List.of(getOne());
+        }
         ArrayList<Pessoa> list = new ArrayList<>();
         list.addAll(getAllPJ(limit/2));
         list.addAll(getAllPF(limit/2));

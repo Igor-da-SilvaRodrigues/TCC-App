@@ -13,7 +13,7 @@ import java.util.UUID;
  * A chave primária da tabela representará os atributos identificadores das entidades genéricas e especializadas.
  * Não será permitido um valor discriminador para o conjunto genérico.
  */
-public class E1Repository {
+public class E1Repository implements TestRepository{
     public static final String DB_NAME = "tcc_e1";
 
     private final Connection connection;
@@ -44,7 +44,7 @@ public class E1Repository {
      *
      * @return the query time in ms
      */
-    public long create (List<Pessoa> pessoas){
+    public double create (List<Pessoa> pessoas){
         String insert = "insert into Pessoa(id,nome,cpf,cnpj,tipo) values (?,?,?,?,?)";
         try(PreparedStatement statement = connection.prepareStatement(insert)){
             for (Pessoa p : pessoas){
@@ -163,6 +163,23 @@ public class E1Repository {
 
             return after-before;
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public double delete(Pessoa pessoa) {
+        return deleteById(pessoa.getId().toString());
+    }
+
+    @Override
+    public int count() {
+        String sql = "select count(id) from Pessoa";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

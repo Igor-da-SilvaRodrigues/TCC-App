@@ -6,10 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -18,7 +15,7 @@ import java.util.concurrent.ExecutionException;
  * A chave primária das tabelas representará o atributo identificador da entidade genérica e da entidade especializada
  * simultaneamente.
  */
-public class ConcreteTableRepository {
+public class ConcreteTableRepository implements TestRepository{
 
     public static final String DB_NAME = "tcc_e5";
     private final Connection connection;
@@ -111,6 +108,10 @@ public class ConcreteTableRepository {
 
     }
 
+    @Override
+    public double selectLimit(int limit) {
+        return selectPFLimit(limit);
+    }
 
     /**
      * Selects up to n entities from the database. In this strategy we can query several specialized tables, they are all
@@ -176,6 +177,29 @@ public class ConcreteTableRepository {
             long after = System.currentTimeMillis();
 
             return after - before;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @Override
+    public double delete(Pessoa pessoa) {
+        return deleteById(pessoa, pessoa.getId().toString());
+    }
+
+    @Override
+    public int count() {
+        String sqlPF = "select count(id) from PessoaFisica";
+        String sqlPJ = "select count(id) from PessoaJuridica";
+        try (PreparedStatement statementPF = connection.prepareStatement(sqlPF);
+        PreparedStatement statementPJ = connection.prepareStatement(sqlPJ)){
+            ResultSet resultPF = statementPF.executeQuery();
+            ResultSet resultPJ = statementPJ.executeQuery();
+            resultPF.next();
+            resultPJ.next();
+
+            return resultPF.getInt(1) + resultPJ.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -317,7 +341,9 @@ public class ConcreteTableRepository {
      * @return
      */
     public List<Pessoa> getAll(int limit){
-        if (limit == 1){throw new RuntimeException("Don't");}
+        if (limit == 1){
+            return List.of(getOne());
+        }
         ArrayList<Pessoa> list = new ArrayList<>();
         list.addAll(getAllPJ(limit/2));
         list.addAll(getAllPF(limit/2));

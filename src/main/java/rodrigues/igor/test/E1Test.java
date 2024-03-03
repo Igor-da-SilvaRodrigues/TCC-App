@@ -12,13 +12,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class E1Test{
+public class E1Test implements GenericTest<E1Repository>{
     /**
      * Creates a set of random entities
      * @return the SQL query time.
      * @throws SQLException if an sql error occurred;
      */
-    public double createBatch(int n, E1Repository repository) throws SQLException {
+    public double createBatch(int n, E1Repository repository){
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
         return repository.create(pessoas);
     }

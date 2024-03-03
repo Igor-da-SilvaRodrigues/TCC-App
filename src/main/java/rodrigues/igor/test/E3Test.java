@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class E3Test {
+public class E3Test implements GenericTest<E3Repository>{
     public double createBatch(int n, E3Repository repository){
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
         return repository.create(pessoas);

@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
  * através de um relacionamento n pra n com uma tabela contendo os valores existentes. Não será permitido um valor
  * discriminador para o conjunto genérico
  */
-public class E3Repository {
+public class E3Repository implements TestRepository{
 
     public static final String DB_NAME = "tcc_e3";
     private final Connection connection;
@@ -108,6 +108,13 @@ public class E3Repository {
         }
     }
 
+    @Override
+    public double updateById(Pessoa pessoa, String id) {
+        return update(pessoa, id);
+    }
+
+
+
     public double update(Pessoa pessoa, String id){
         String sql = "update Pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
@@ -129,6 +136,23 @@ public class E3Repository {
             long after = System.currentTimeMillis();
 
             return after - before;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public double delete(Pessoa pessoa) {
+        return delete(pessoa.getId().toString());
+    }
+
+    @Override
+    public int count() {
+        String sql = "select count(id) from Pessoa";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

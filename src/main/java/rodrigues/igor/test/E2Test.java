@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class E2Test {
+public class E2Test implements GenericTest<E2Repository>{
     public double createBatch(int n, E2Repository repository){
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
         return repository.create(pessoas);

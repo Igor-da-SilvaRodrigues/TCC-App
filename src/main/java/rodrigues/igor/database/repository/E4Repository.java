@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class E4Repository {
+public class E4Repository implements TestRepository{
 
     public static final String DB_NAME = "tcc_e4";
     private final Connection connection;
@@ -86,6 +86,11 @@ public class E4Repository {
         }
     }
 
+    @Override
+    public double updateById(Pessoa pessoa, String id) {
+        return update(pessoa, id);
+    }
+
     public double update(Pessoa p, String id){
         String sql = "update Pessoa set nome = ?, cpf = ?, cnpj = ? where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
@@ -149,6 +154,23 @@ public class E4Repository {
             }
 
             return pessoas;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public double delete(Pessoa pessoa) {
+        return deleteById(pessoa.getId().toString());
+    }
+
+    @Override
+    public int count() {
+        String sql = "select count(id) from Pessoa";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

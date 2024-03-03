@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassTableTest {
+public class ClassTableTest implements GenericTest<ClassTableRepository>{
 
     public double createBatch(int n, ClassTableRepository repository){
         ArrayList<Pessoa> pessoas = new PessoaGenerator().generateList(n);
