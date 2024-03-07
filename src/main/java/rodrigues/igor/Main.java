@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("V5");
         String name = askName();
         String password = askPassword();
         int loops = 10;
