@@ -12,7 +12,9 @@ def main(args:list):
     sortedList = sorted(valueList)
     
     q1,q3 = np.percentile(sortedList, [25,75])
-    print([i for i in sortedList if validate(i, q1, q3)])
+    validatedList = [i for i in sortedList if validate(i, q1, q3)]
+    dp = np.std(validatedList)
+    print(f'{validatedList} dp={dp:.2f}')
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
