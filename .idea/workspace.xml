@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="TCC-App.main:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
@@ -7,7 +12,8 @@
     <list default="true" id="33f517b6-0ae0-49ff-979e-ea1e6d77b738" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/ConnectionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/database/ConnectionDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/result/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/result/Result.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/result/StrategyResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rodrigues/igor/test/result/StrategyResult.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +48,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
       </list>
@@ -70,21 +77,28 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ToolWindowRun.ShowToolbar": "false",
     "git-widget-placeholder": "tests",
     "ignore.virus.scanning.warn.message": "true",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
+    "last_opened_file_path": "C:/Users/rodri/OneDrive/Documentos/GitHub/TCC-App/src/main/resources/META-INF",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2862069",
     "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\rodri\OneDrive\Documentos\GitHub\TCC-App\src\main\resources" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="17" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="rodrigues.igor.Main" />
       <module name="TCC-App.main" />
-      <option name="PROGRAM_PARAMETERS" value="root @Enxadrismo1" />
+      <option name="PROGRAM_PARAMETERS" value="-Xmx6g" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>

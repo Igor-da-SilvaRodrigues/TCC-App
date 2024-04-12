@@ -14,7 +14,10 @@ def main(args:list):
     q1,q3 = np.percentile(sortedList, [25,75])
     validatedList = [i for i in sortedList if validate(i, q1, q3)]
     dp = np.std(validatedList)
-    print(f'{validatedList} dp={dp:.2f}')
+    avg = np.average(validatedList)
+    print(f'{validatedList}')
+    print(f'dp={dp:.6f}')
+    print(f'avg={avg:.6f}')
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
